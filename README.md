@@ -8,6 +8,7 @@ ChainOSCシリーズでは、操作するハードウェアやアプリが変わ
 ## Series portal
 
 - [ChainOSC Series Portal](https://shimez.github.io/ChainOSC/)
+- [ChainOSCシリーズ紹介記事（note）](https://note.com/ctake_shimez/n/n826ad2d35229)
 
 ## Products
 
@@ -34,7 +35,6 @@ A portable Windows application that sends OSC from configurable global
 hotkeys. No additional hardware is required.
 
 - [Product portal](https://shimez.github.io/ChainOSC-for-Windows/)
-- [Latest Release](https://github.com/shimez/ChainOSC-for-Windows/releases/latest)
 - [GitHub repository](https://github.com/shimez/ChainOSC-for-Windows)
 
 ## Shared features
