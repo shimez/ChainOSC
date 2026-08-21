@@ -8,6 +8,7 @@ ChainOSCシリーズでは、操作するハードウェアやアプリが変わ
 ## Series portal
 
 - [ChainOSC Series Portal](https://shimez.github.io/ChainOSC/)
+- [ChainOSC Series Portal · English](https://shimez.github.io/ChainOSC/en/)
 - [ChainOSCシリーズ紹介記事（note）](https://note.com/ctake_shimez/n/n826ad2d35229)
 
 ## Products
