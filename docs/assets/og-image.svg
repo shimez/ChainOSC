@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#101a31"/><stop offset="1" stop-color="#070b14"/></linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#9674ff"/><stop offset=".52" stop-color="#5fa1ff"/><stop offset="1" stop-color="#55d49a"/></linearGradient>
+    <radialGradient id="glow"><stop stop-color="#806dff" stop-opacity=".38"/><stop offset="1" stop-color="#806dff" stop-opacity="0"/></radialGradient>
+    <filter id="shadow"><feGaussianBlur stdDeviation="18"/></filter>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="930" cy="90" r="360" fill="url(#glow)"/>
+  <g opacity=".12" fill="none" stroke="#aebcff"><path d="M0 520C210 410 390 610 620 480s390-10 580-120"/><path d="M0 560C250 450 430 640 650 510s370-20 550-90"/></g>
+  <rect x="62" y="62" width="1076" height="506" rx="34" fill="#101827" fill-opacity=".78" stroke="#33425d"/>
+  <rect x="62" y="62" width="1076" height="7" rx="4" fill="url(#accent)"/>
+  <g transform="translate(93 108)" fill="none" stroke="url(#accent)" stroke-width="14">
+    <rect x="0" y="18" width="92" height="56" rx="28" transform="rotate(-18 46 46)"/>
+    <rect x="62" y="18" width="92" height="56" rx="28" transform="rotate(18 108 46)"/>
+  </g>
+  <text x="92" y="265" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="94" font-weight="750" letter-spacing="-4">ChainOSC</text>
+  <text x="96" y="326" fill="#aebbd0" font-family="Segoe UI, Arial, sans-serif" font-size="28" font-weight="650" letter-spacing="5">OSC CONTROLLER SERIES</text>
+  <text x="96" y="403" fill="#dce4f1" font-family="Segoe UI, Arial, sans-serif" font-size="31">Physical controls and global hotkeys for OSC</text>
+  <g font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="650">
+    <rect x="94" y="468" width="220" height="55" rx="27" fill="#9674ff" fill-opacity=".16" stroke="#9674ff"/><text x="122" y="503" fill="#d7ceff">M5ChainOSC</text>
+    <rect x="330" y="468" width="230" height="55" rx="27" fill="#55d49a" fill-opacity=".14" stroke="#55d49a"/><text x="358" y="503" fill="#b8f4d7">ChainOSCmini</text>
+    <rect x="576" y="468" width="337" height="55" rx="27" fill="#5fa1ff" fill-opacity=".14" stroke="#5fa1ff"/><text x="604" y="503" fill="#c3dcff">ChainOSC for Windows</text>
+  </g>
+  <text x="1105" y="538" text-anchor="end" fill="#7f8da3" font-family="Segoe UI, Arial, sans-serif" font-size="19">shimez.github.io/ChainOSC</text>
+</svg>
