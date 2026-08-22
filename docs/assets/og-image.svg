@@ -5,7 +5,7 @@
     <radialGradient id="glow"><stop stop-color="#806dff" stop-opacity=".38"/><stop offset="1" stop-color="#806dff" stop-opacity="0"/></radialGradient>
     <filter id="shadow"><feGaussianBlur stdDeviation="18"/></filter>
   </defs>
-  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect x="-1" y="-1" width="1202" height="632" fill="url(#bg)"/>
   <circle cx="930" cy="90" r="360" fill="url(#glow)"/>
   <g opacity=".12" fill="none" stroke="#aebcff"><path d="M0 520C210 410 390 610 620 480s390-10 580-120"/><path d="M0 560C250 450 430 640 650 510s370-20 550-90"/></g>
   <rect x="62" y="62" width="1076" height="506" rx="34" fill="#101827" fill-opacity=".78" stroke="#33425d"/>
