@@ -14,13 +14,13 @@
     <rect x="0" y="18" width="92" height="56" rx="28" transform="rotate(-18 46 46)"/>
     <rect x="62" y="18" width="92" height="56" rx="28" transform="rotate(18 108 46)"/>
   </g>
-  <text x="92" y="265" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="94" font-weight="750" letter-spacing="-4">ChainOSC</text>
+  <text x="92" y="273" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="94" font-weight="750" letter-spacing="-4">ChainOSC</text>
   <text x="96" y="326" fill="#aebbd0" font-family="Segoe UI, Arial, sans-serif" font-size="28" font-weight="650" letter-spacing="5">OSC CONTROLLER SERIES</text>
   <text x="96" y="403" fill="#dce4f1" font-family="Segoe UI, Arial, sans-serif" font-size="31">Physical controls and global hotkeys for OSC</text>
   <g font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="650">
-    <rect x="94" y="468" width="220" height="55" rx="27" fill="#9674ff" fill-opacity=".16" stroke="#9674ff"/><text x="122" y="503" fill="#d7ceff">M5ChainOSC</text>
-    <rect x="330" y="468" width="230" height="55" rx="27" fill="#55d49a" fill-opacity=".14" stroke="#55d49a"/><text x="358" y="503" fill="#b8f4d7">ChainOSCmini</text>
-    <rect x="576" y="468" width="337" height="55" rx="27" fill="#5fa1ff" fill-opacity=".14" stroke="#5fa1ff"/><text x="604" y="503" fill="#c3dcff">ChainOSC for Windows</text>
+    <rect x="94" y="468" width="194" height="55" rx="27" fill="#9674ff" fill-opacity=".16" stroke="#9674ff"/><text x="122" y="503" fill="#d7ceff">M5ChainOSC</text>
+    <rect x="304" y="468" width="210" height="55" rx="27" fill="#55d49a" fill-opacity=".14" stroke="#55d49a"/><text x="332" y="503" fill="#b8f4d7">ChainOSCmini</text>
+    <rect x="530" y="468" width="300" height="55" rx="27" fill="#5fa1ff" fill-opacity=".14" stroke="#5fa1ff"/><text x="558" y="503" fill="#c3dcff">ChainOSC for Windows</text>
   </g>
   <text x="1105" y="538" text-anchor="end" fill="#7f8da3" font-family="Segoe UI, Arial, sans-serif" font-size="19">shimez.github.io/ChainOSC</text>
 </svg>
