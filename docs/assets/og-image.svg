@@ -4,18 +4,19 @@
     <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#9674ff"/><stop offset=".52" stop-color="#55d49a"/><stop offset="1" stop-color="#5fa1ff"/></linearGradient>
     <linearGradient id="leftLink" x1="0" y1="46" x2="92" y2="46" gradientUnits="userSpaceOnUse"><stop stop-color="#9674ff"/><stop offset="1" stop-color="#55d49a"/></linearGradient>
     <linearGradient id="rightLink" x1="154" y1="46" x2="62" y2="46" gradientUnits="userSpaceOnUse"><stop stop-color="#5fa1ff"/><stop offset="1" stop-color="#55d49a"/></linearGradient>
+    <linearGradient id="iconBg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#273963"/><stop offset="1" stop-color="#080c16"/></linearGradient>
+    <linearGradient id="iconLeft" x1="9" y1="30.5" x2="36" y2="30.5" gradientUnits="userSpaceOnUse"><stop stop-color="#9674ff"/><stop offset="1" stop-color="#55d49a"/></linearGradient>
+    <linearGradient id="iconRight" x1="55" y1="30.5" x2="28" y2="30.5" gradientUnits="userSpaceOnUse"><stop stop-color="#5fa1ff"/><stop offset="1" stop-color="#55d49a"/></linearGradient>
     <radialGradient id="glow"><stop stop-color="#806dff" stop-opacity=".38"/><stop offset="1" stop-color="#806dff" stop-opacity="0"/></radialGradient>
+    <clipPath id="cardClip"><rect x="62" y="62" width="1076" height="506" rx="34"/></clipPath>
     <filter id="shadow"><feGaussianBlur stdDeviation="18"/></filter>
   </defs>
   <rect x="-1" y="-1" width="1202" height="632" fill="url(#bg)"/>
   <circle cx="930" cy="90" r="360" fill="url(#glow)"/>
   <g opacity=".12" fill="none" stroke="#aebcff"><path d="M0 520C210 410 390 610 620 480s390-10 580-120"/><path d="M0 560C250 450 430 640 650 510s370-20 550-90"/></g>
   <rect x="62" y="62" width="1076" height="506" rx="34" fill="#101827" fill-opacity=".78" stroke="#33425d"/>
-  <rect x="62" y="62" width="1076" height="7" rx="4" fill="url(#accent)"/>
-  <g transform="translate(93 108)" fill="none" stroke-width="14">
-    <rect x="0" y="18" width="92" height="56" rx="28" transform="rotate(-18 46 46)" stroke="url(#leftLink)"/>
-    <rect x="62" y="18" width="92" height="56" rx="28" transform="rotate(18 108 46)" stroke="url(#rightLink)"/>
-  </g>
+  <rect x="62" y="62" width="1076" height="7" fill="url(#accent)" clip-path="url(#cardClip)"/>
+  <g transform="translate(92 100) scale(1.5)"><rect width="64" height="64" rx="14" fill="url(#iconBg)"/><g fill="none" stroke-width="5.5"><rect x="9" y="22" width="27" height="17" rx="8.5" transform="rotate(-18 22.5 30.5)" stroke="url(#iconLeft)"/><rect x="28" y="22" width="27" height="17" rx="8.5" transform="rotate(18 41.5 30.5)" stroke="url(#iconRight)"/></g></g>
   <text x="92" y="273" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="94" font-weight="750" letter-spacing="-4">ChainOSC</text>
   <text x="96" y="326" fill="#aebbd0" font-family="Segoe UI, Arial, sans-serif" font-size="28" font-weight="650" letter-spacing="5">OSC CONTROLLER SERIES</text>
   <text x="96" y="403" fill="#dce4f1" font-family="Segoe UI, Arial, sans-serif" font-size="31">Physical controls and global hotkeys for OSC</text>
