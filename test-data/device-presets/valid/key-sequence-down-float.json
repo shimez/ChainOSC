@@ -1,0 +1,1 @@
+{"format":"ChainOSC-device-preset","schemaVersion":1,"deviceType":3,"deviceTypeName":"Key","key":{"mode":1,"press":[],"release":[],"sequence":{"address":"/chainosc/test/sequence/down","type":0,"start":3,"end":0,"step":-1}}}
