@@ -24,7 +24,13 @@
       "additionalProperties": false,
       "properties": {
         "address": { "$ref": "#/$defs/oscAddress" },
-        "value": { "type": "string", "x-chainosc-maxUtf8Bytes": 128, "x-chainosc-valueMustMatchType": true },
+        "value": {
+          "type": "string",
+          "x-chainosc-maxUtf8Bytes": 128,
+          "x-chainosc-valueMustMatchType": true,
+          "x-chainosc-intType": "OSC 1.0 int32 (-2147483648..2147483647)",
+          "x-chainosc-floatType": "finite OSC 1.0 float32; NaN and Infinity are rejected"
+        },
         "type": { "$ref": "#/$defs/oscType" }
       }
     },

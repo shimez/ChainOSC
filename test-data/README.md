@@ -18,6 +18,8 @@ Exporterを変更した場合は、出力が対応するcanonical fixtureと同�
 | `device-presets/valid/key-press-release-types.json` | Int／Float／String、Press／Release、合計6件 | SERIES-KEY-01、SERIES-PRESET-KEY-01／02 |
 | `device-presets/valid/key-sequence-up-int.json` | 増加Sequence | SERIES-KEY-05 |
 | `device-presets/valid/key-sequence-down-float.json` | 減少Sequence | SERIES-KEY-06 |
+| `device-presets/valid/key-int32-boundaries.json` | OSC int32の最小値／最大値 | SERIES-JSON-02 |
+| `device-presets/valid/key-float32-finite.json` | 有限なOSC float32境界付近 | SERIES-JSON-02 |
 | `device-presets/valid/encoder.json` | Encoder Absolute、クリック | SERIES-PRESET-ENC-01 |
 | `device-presets/valid/angle.json` | Angle 12-bit、Deadband | SERIES-PRESET-ANGLE-01 |
 | `device-presets/valid/tof.json` | ToF最大距離、方向、出力範囲 | SERIES-PRESET-TOF-01 |
@@ -37,6 +39,11 @@ Exporterを変更した場合は、出力が対応するcanonical fixtureと同�
 | `device-presets/invalid/key-address-too-long.json` | OSC Addressが192 bytesを超える | SERIES-JSON-02 |
 | `device-presets/invalid/key-value-too-long.json` | Valueが128 bytesを超える | SERIES-JSON-02 |
 | `device-presets/invalid/key-invalid-int.json` | Intとして不正なValue | SERIES-JSON-02 |
+| `device-presets/invalid/key-int32-underflow.json` | OSC int32の下限未満 | SERIES-JSON-02 |
+| `device-presets/invalid/key-int32-overflow.json` | OSC int32の上限超過 | SERIES-JSON-02 |
+| `device-presets/invalid/key-float32-nan.json` | FloatのNaN | SERIES-JSON-02 |
+| `device-presets/invalid/key-float32-infinity.json` | FloatのInfinity | SERIES-JSON-02 |
+| `device-presets/invalid/key-float32-overflow.json` | float32変換時にInfinityとなる値 | SERIES-JSON-02 |
 | `device-presets/invalid/key-nine-messages.json` | Press／Release合計9件 | SERIES-JSON-02 |
 | `device-presets/invalid/key-sequence-zero-step.json` | Sequence Stepが0 | SERIES-JSON-02 |
 | `device-presets/invalid/key-sequence-wrong-direction.json` | Sequenceの方向とStepが不整合 | SERIES-JSON-02 |

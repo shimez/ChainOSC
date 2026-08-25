@@ -33,17 +33,24 @@
 
 正規出力には、対応する設定項目以外のルート項目を追加しません。
 
+`deviceType`がデバイス種類を判定する正式な識別子です。`deviceTypeName`は人が読みやすくするための正規メタデータであり、表に示した`deviceType`との組み合わせに一致しなければなりません。Importerの互換処理も、種類判定には`deviceType`を使用します。
+
 ## 共通の値
 
 ### OSC型
 
 | 値 | OSC型 |
 | ---: | --- |
-| 0 | Float |
-| 1 | Int |
+| 0 | Float（OSC Type Tag `f`） |
+| 1 | Int（OSC Type Tag `i`） |
 | 2 | String |
 
 ToFの`range.type`はFloatまたはIntだけなので、0または1です。
+
+- IntはOSC 1.0の`int32`です。値域は`-2147483648`～`2147483647`です。
+- FloatはOSC 1.0の`float32`、すなわち32-bit IEEE 754浮動小数点数として送信します。
+- ChainOSCは相互運用性と設定の安定性のため、Floatを有限値に限定します。NaN、正のInfinity、負のInfinityは正規出力に含めず、Importerで拒否します。
+- Decimal表現からfloat32へ変換した結果がInfinityになる値も拒否します。
 
 ### OSC Address
 
@@ -61,7 +68,9 @@ ToFの`range.type`はFloatまたはIntだけなので、0または1です。
 - `address`: OSC Address
 - `value`: UTF-8で128 bytes以下のString
 - `type`: 0、1、2
-- FloatとIntの`value`は、それぞれの型として変換可能な10進文字列です。
+- Intの`value`は、OSC `int32`として変換できる10進整数文字列です。
+- Floatの`value`は、有限なOSC `float32`として変換できる10進浮動小数点文字列です。
+- Stringの`value`は文字列としてそのまま送信します。
 
 ### Range
 

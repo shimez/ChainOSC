@@ -312,6 +312,8 @@ M5ChainOSC → ChainOSCmini → ChainOSCnano → M5ChainOSC
 - `/`で始まらないOSC Address
 - 上限を超えるAddressまたはValue
 - 不正なInt／Float
+- OSC int32の下限未満／上限超過
+- FloatのNaN、Infinity、float32変換時のオーバーフロー
 - PressとReleaseの合計9件以上
 - SequenceのStart／End／Stepの不整合
 
@@ -320,6 +322,8 @@ M5ChainOSC → ChainOSCmini → ChainOSCnano → M5ChainOSC
 - 全製品で拒否される
 - 可能な限り原因が同等の内容で表示される
 - 一部だけが保存されることはない
+- Intは`-2147483648`～`2147483647`を受け入れ、その範囲外を拒否する
+- Floatは有限なfloat32として送信でき、非有限値を拒否する
 
 ### SERIES-JSON-03 容量境界
 
