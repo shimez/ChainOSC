@@ -1,0 +1,198 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/shimez/ChainOSC/main/schemas/chainosc-device-preset-v1.schema.json",
+  "title": "ChainOSC Device Preset JSON Format v1",
+  "description": "Canonical output produced by current ChainOSC device preset exporters. Importers may accept additional legacy input.",
+  "oneOf": [
+    { "$ref": "#/$defs/keyPreset" },
+    { "$ref": "#/$defs/encoderPreset" },
+    { "$ref": "#/$defs/anglePreset" },
+    { "$ref": "#/$defs/tofPreset" },
+    { "$ref": "#/$defs/joystickPreset" }
+  ],
+  "$defs": {
+    "oscAddress": {
+      "type": "string",
+      "pattern": "^/[^\\s#*,?\\[\\]{}]*$",
+      "x-chainosc-maxUtf8Bytes": 192
+    },
+    "oscType": { "type": "integer", "enum": [0, 1, 2] },
+    "numericOscType": { "type": "integer", "enum": [0, 1] },
+    "oscMessage": {
+      "type": "object",
+      "required": ["address", "value", "type"],
+      "additionalProperties": false,
+      "properties": {
+        "address": { "$ref": "#/$defs/oscAddress" },
+        "value": { "type": "string", "x-chainosc-maxUtf8Bytes": 128, "x-chainosc-valueMustMatchType": true },
+        "type": { "$ref": "#/$defs/oscType" }
+      }
+    },
+    "messageArray": {
+      "type": "array",
+      "maxItems": 8,
+      "items": { "$ref": "#/$defs/oscMessage" }
+    },
+    "sequence": {
+      "type": "object",
+      "required": ["address", "type", "start", "end", "step"],
+      "additionalProperties": false,
+      "x-chainosc-stepMustMoveTowardEnd": true,
+      "properties": {
+        "address": { "$ref": "#/$defs/oscAddress" },
+        "type": { "$ref": "#/$defs/oscType" },
+        "start": { "type": "number" },
+        "end": { "type": "number" },
+        "step": { "type": "number", "not": { "const": 0 } }
+      }
+    },
+    "range": {
+      "type": "object",
+      "required": ["outMin", "outMax", "type"],
+      "additionalProperties": false,
+      "properties": {
+        "outMin": { "type": "number" },
+        "outMax": { "type": "number" },
+        "type": { "$ref": "#/$defs/oscType" }
+      }
+    },
+    "numericRange": {
+      "type": "object",
+      "required": ["outMin", "outMax", "type"],
+      "additionalProperties": false,
+      "properties": {
+        "outMin": { "type": "number" },
+        "outMax": { "type": "number" },
+        "type": { "$ref": "#/$defs/numericOscType" }
+      }
+    },
+    "button": {
+      "type": "object",
+      "required": ["mode", "press", "release", "sequence"],
+      "additionalProperties": false,
+      "x-chainosc-pressReleaseMaxItems": 8,
+      "properties": {
+        "mode": { "type": "integer", "enum": [0, 1] },
+        "press": { "$ref": "#/$defs/messageArray" },
+        "release": { "$ref": "#/$defs/messageArray" },
+        "sequence": { "$ref": "#/$defs/sequence" }
+      }
+    },
+    "rootKey": {
+      "type": "object",
+      "required": ["format", "schemaVersion", "deviceType", "deviceTypeName", "key"],
+      "additionalProperties": false,
+      "properties": {
+        "format": { "const": "ChainOSC-device-preset" },
+        "schemaVersion": { "const": 1 },
+        "deviceType": { "const": 3 },
+        "deviceTypeName": { "const": "Key" },
+        "key": { "$ref": "#/$defs/button" }
+      }
+    },
+    "keyPreset": { "$ref": "#/$defs/rootKey" },
+    "encoderPreset": {
+      "type": "object",
+      "required": ["format", "schemaVersion", "deviceType", "deviceTypeName", "encoder"],
+      "additionalProperties": false,
+      "properties": {
+        "format": { "const": "ChainOSC-device-preset" },
+        "schemaVersion": { "const": 1 },
+        "deviceType": { "const": 1 },
+        "deviceTypeName": { "const": "Encoder" },
+        "encoder": {
+          "type": "object",
+          "required": ["rotationAddress", "sendIncrement", "absoluteInputMin", "absoluteInputMax", "incrementScale", "range", "clickMode", "press", "release", "sequence"],
+          "additionalProperties": false,
+          "x-chainosc-pressReleaseMaxItems": 8,
+          "properties": {
+            "rotationAddress": { "$ref": "#/$defs/oscAddress" },
+            "sendIncrement": { "type": "boolean" },
+            "absoluteInputMin": { "type": "number" },
+            "absoluteInputMax": { "type": "number" },
+            "incrementScale": { "type": "number" },
+            "range": { "$ref": "#/$defs/range" },
+            "clickMode": { "type": "integer", "enum": [0, 1] },
+            "press": { "$ref": "#/$defs/messageArray" },
+            "release": { "$ref": "#/$defs/messageArray" },
+            "sequence": { "$ref": "#/$defs/sequence" }
+          }
+        }
+      }
+    },
+    "anglePreset": {
+      "type": "object",
+      "required": ["format", "schemaVersion", "deviceType", "deviceTypeName", "angle"],
+      "additionalProperties": false,
+      "properties": {
+        "format": { "const": "ChainOSC-device-preset" },
+        "schemaVersion": { "const": 1 },
+        "deviceType": { "const": 2 },
+        "deviceTypeName": { "const": "Angle" },
+        "angle": {
+          "type": "object",
+          "required": ["address", "use12bit", "deadband", "range"],
+          "additionalProperties": false,
+          "properties": {
+            "address": { "$ref": "#/$defs/oscAddress" },
+            "use12bit": { "type": "boolean" },
+            "deadband": { "type": "integer", "minimum": 1 },
+            "range": { "$ref": "#/$defs/range" }
+          }
+        }
+      }
+    },
+    "tofPreset": {
+      "type": "object",
+      "required": ["format", "schemaVersion", "deviceType", "deviceTypeName", "tof"],
+      "additionalProperties": false,
+      "properties": {
+        "format": { "const": "ChainOSC-device-preset" },
+        "schemaVersion": { "const": 1 },
+        "deviceType": { "const": 5 },
+        "deviceTypeName": { "const": "ToF" },
+        "tof": {
+          "type": "object",
+          "required": ["address", "deadband", "maxDistanceMm", "nearValueHigh", "range"],
+          "additionalProperties": false,
+          "properties": {
+            "address": { "$ref": "#/$defs/oscAddress" },
+            "deadband": { "type": "integer", "minimum": 1, "maximum": 2000 },
+            "maxDistanceMm": { "type": "integer", "minimum": 31, "maximum": 2000 },
+            "nearValueHigh": { "type": "boolean" },
+            "range": { "$ref": "#/$defs/numericRange" }
+          }
+        }
+      }
+    },
+    "joystickPreset": {
+      "type": "object",
+      "required": ["format", "schemaVersion", "deviceType", "deviceTypeName", "joystick"],
+      "additionalProperties": false,
+      "properties": {
+        "format": { "const": "ChainOSC-device-preset" },
+        "schemaVersion": { "const": 1 },
+        "deviceType": { "const": 4 },
+        "deviceTypeName": { "const": "Joystick" },
+        "joystick": {
+          "type": "object",
+          "required": ["xAddress", "yAddress", "deadband", "invertX", "invertY", "range", "clickMode", "press", "release", "sequence"],
+          "additionalProperties": false,
+          "x-chainosc-pressReleaseMaxItems": 8,
+          "properties": {
+            "xAddress": { "$ref": "#/$defs/oscAddress" },
+            "yAddress": { "$ref": "#/$defs/oscAddress" },
+            "deadband": { "type": "integer", "minimum": 1, "maximum": 254 },
+            "invertX": { "type": "boolean" },
+            "invertY": { "type": "boolean" },
+            "range": { "$ref": "#/$defs/range" },
+            "clickMode": { "type": "integer", "enum": [0, 1] },
+            "press": { "$ref": "#/$defs/messageArray" },
+            "release": { "$ref": "#/$defs/messageArray" },
+            "sequence": { "$ref": "#/$defs/sequence" }
+          }
+        }
+      }
+    }
+  }
+}

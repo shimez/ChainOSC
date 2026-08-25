@@ -2,6 +2,15 @@
 
 このディレクトリには、`SERIES_COMPATIBILITY_TEST.md`で使用する製品非依存のデバイスプリセットと不正JSONを格納します。
 
+## 正規出力fixture
+
+`device-presets/canonical/`には、現行Exporterが生成する`ChainOSC Device Preset JSON Format v1`のデバイス種類別fixtureがあります。
+
+- 仕様: [`../DEVICE_PRESET_FORMAT_V1.md`](../DEVICE_PRESET_FORMAT_V1.md)
+- JSON Schema: [`../schemas/chainosc-device-preset-v1.schema.json`](../schemas/chainosc-device-preset-v1.schema.json)
+
+Exporterを変更した場合は、出力が対応するcanonical fixtureと同じ構造・型・意味を持つことを確認します。空白、数値の小数桁数、オブジェクトのプロパティ順序は比較対象外です。
+
 ## 正常系プリセット
 
 | ファイル | 主な用途 | 対応テスト |

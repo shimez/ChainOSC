@@ -1,5 +1,9 @@
 # ChainOSC
 
+## Device Preset JSON
+
+ChainOSCシリーズ共通の現行Exporter正規出力は、[`ChainOSC Device Preset JSON Format v1`](DEVICE_PRESET_FORMAT_V1.md)として文書化しています。機械可読なJSON Schemaとデバイス種類別fixtureも同じリポジトリで管理します。
+
 ChainOSC is a family of open-source OSC controllers for M5Stack Chain devices
 and Windows global hotkeys.
 

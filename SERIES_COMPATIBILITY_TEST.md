@@ -27,6 +27,8 @@
 
 全体設定JSONは製品間互換ではありません。デバイス単位の`ChainOSC-device-preset`だけを互換対象とします。
 
+デバイスプリセットの現行Exporter正規出力は[`DEVICE_PRESET_FORMAT_V1.md`](DEVICE_PRESET_FORMAT_V1.md)で定義し、[`schemas/chainosc-device-preset-v1.schema.json`](schemas/chainosc-device-preset-v1.schema.json)とcanonical fixtureを基準に確認します。Importerの旧形式対応は、この正規出力仕様とは分けて扱います。
+
 ## テスト結果の記録
 
 テスト開始時に次を記録します。
@@ -200,6 +202,7 @@ Type  = Float
 - `deviceType`がKeyを示す
 - UID、ローカルのデバイス名、Windowsのホットキーを含まない
 - Press / Release、Sequence、OSC型と値を保持する
+- v1 JSON Schemaに適合し、canonical Key fixtureと同じ必須項目と型を持つ
 
 ### SERIES-PRESET-KEY-02 相互インポート
 
