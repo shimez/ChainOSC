@@ -9,27 +9,36 @@
 - M5ChainOSC
 - ChainOSCmini
 - ChainOSCnano
+- ChainOSCPad
 - ChainOSC for Windows
 
 ## 適用範囲
 
-| 項目 | M5ChainOSC | ChainOSCmini | ChainOSCnano | Windows |
-| --- | --- | --- | --- | --- |
-| Key Press / Release | 対象 | 対象 | 対象 | 対象 |
-| Key Sequence | 対象 | 対象 | 対象 | 対象 |
-| Keyプリセット互換 | 対象 | 対象 | 対象 | 対象 |
-| Encoder | 対象 | 対象 | 対象 | 対象外 |
-| Angle | 対象 | 対象 | 対象 | 対象外 |
-| ToF | 対象 | 対象 | 対象 | 対象外 |
-| Joystick | 対象 | 対象 | 対象 | 対象外 |
-| Wi-Fi／Web UI | 対象 | 対象 | 対象 | 対象外 |
-| 全体設定JSON | 製品固有形式 | 製品固有形式 | 製品固有形式 | 製品固有形式 |
+| 項目 | M5ChainOSC | ChainOSCmini | ChainOSCnano | ChainOSCPad | Windows |
+| --- | --- | --- | --- | --- | --- |
+| Key Press / Release | 対象 | 対象 | 対象 | 対象 | 対象 |
+| Key Sequence | 対象 | 対象 | 対象 | 対象 | 対象 |
+| Keyプリセット互換 | 対象 | 対象 | 対象 | 対象 | 対象 |
+| Encoder | 対象 | 対象 | 対象 | 対象 | 対象外 |
+| Angle | 対象 | 対象 | 対象 | 対象外 | 対象外 |
+| ToF | 対象 | 対象 | 対象 | 対象外 | 対象外 |
+| Joystick | 対象 | 対象 | 対象 | 対象外 | 対象外 |
+| Wi-Fi／Web UI | 対象 | 対象 | 対象 | 対象 | 対象外 |
+| 全体設定JSON | 製品固有形式 | 製品固有形式 | 製品固有形式 | 製品固有形式 | 製品固有形式 |
 
 全体設定JSONは製品間互換ではありません。デバイス単位の`ChainOSC-device-preset`だけを互換対象とします。
 
 デバイスプリセットの現行Exporter正規出力は[`DEVICE_PRESET_FORMAT_V1.md`](DEVICE_PRESET_FORMAT_V1.md)で定義し、[`schemas/chainosc-device-preset-v1.schema.json`](schemas/chainosc-device-preset-v1.schema.json)とcanonical fixtureを基準に確認します。Importerの旧形式対応は、この正規出力仕様とは分けて扱います。
 
 ## テスト結果の記録
+
+実施結果は[`test-results/`](test-results/)へ保存します。Device Preset互換テストでは、[`test-results/DEVICE_PRESET_RESULT_TEMPLATE.md`](test-results/DEVICE_PRESET_RESULT_TEMPLATE.md)をコピーして使用してください。
+
+推奨ファイル名:
+
+```text
+test-results/YYYY-MM-DD-device-preset-v1.md
+```
 
 テスト開始時に次を記録します。
 
@@ -39,6 +48,7 @@
 M5ChainOSC:
 ChainOSCmini:
 ChainOSCnano:
+ChainOSCPad:
 ChainOSC for Windows:
 OSC受信環境:
 使用ブラウザー:
@@ -93,7 +103,7 @@ OSC受信環境:
 
 ## 2. Key共通仕様
 
-以下は4製品すべてで実施します。
+以下は5製品すべてで実施します。
 
 ### SERIES-KEY-01 Press / Release
 
@@ -211,7 +221,8 @@ Type  = Float
 ```text
 M5ChainOSC → ChainOSCmini
 ChainOSCmini → ChainOSCnano
-ChainOSCnano → ChainOSC for Windows
+ChainOSCnano → ChainOSCPad
+ChainOSCPad → ChainOSC for Windows
 ChainOSC for Windows → M5ChainOSC
 ```
 
@@ -225,12 +236,18 @@ ChainOSC for Windows → M5ChainOSC
 
 ## 4. Chainデバイスプリセット互換
 
-この章はM5ChainOSC、ChainOSCmini、ChainOSCnanoで実施します。
+EncoderはM5ChainOSC、ChainOSCmini、ChainOSCnano、ChainOSCPadで実施します。Angle、ToF、JoystickはM5ChainOSC、ChainOSCmini、ChainOSCnanoで実施します。
 
 各デバイス種類について、次の経路を確認します。
 
 ```text
 M5ChainOSC → ChainOSCmini → ChainOSCnano → M5ChainOSC
+```
+
+EncoderだけはChainOSCPadを含む次の経路で確認します。
+
+```text
+M5ChainOSC → ChainOSCmini → ChainOSCnano → ChainOSCPad → M5ChainOSC
 ```
 
 ### SERIES-PRESET-ENC-01 Encoder
@@ -337,7 +354,7 @@ M5ChainOSC → ChainOSCmini → ChainOSCnano → M5ChainOSC
 
 ## 6. Wi-Fi切断と復旧
 
-この章はハードウェア3製品で実施します。
+この章はハードウェア4製品で実施します。
 
 ### SERIES-WIFI-01 起動時に保存済みAPが停止
 
@@ -375,7 +392,7 @@ M5ChainOSC → ChainOSCmini → ChainOSCnano → M5ChainOSC
 
 ## 7. UID、抜き差し、保存済みデバイス
 
-この章はハードウェア3製品で実施します。
+この章はChainデバイスを接続するM5ChainOSC、ChainOSCmini、ChainOSCnanoで実施します。
 
 ### SERIES-DEVICE-01 UID復元
 
@@ -470,6 +487,13 @@ M5ChainOSC → ChainOSCmini → ChainOSCnano → M5ChainOSC
 
 20件は現在の確認済み基準負荷であり、すべての設定内容に対する保証上限とは定義しません。
 
+### SERIES-STORAGE-PAD-01 ChainOSCPad
+
+- Key 1～12とEncoderへ最大8メッセージを含む設定を保存する
+- 全体設定のエクスポート、変更、再インポート、再起動後の復元を確認する
+- XIAO ESP32S3とXIAO ESP32C6の両方でLittleFSへの保存と読み戻しを確認する
+- 保存中断や不正JSONの後も、既存設定を維持する
+
 ### SERIES-STRESS-01 連続動作
 
 ハードウェア製品で次を実施します。
@@ -518,9 +542,10 @@ Main loop:     average / maximum
 - M5ChainOSC: 画面表示、画面回転、OSC送信表示、NVS移行を追加確認する
 - ChainOSCmini: DualKey本体キー、左右Chainポート、右側Joystick軸補正を追加確認する
 - ChainOSCnano: M5NanoC6本体ボタン、4 MB Flash、PSRAMなし、本体LEDを追加確認する
+- ChainOSCPad: 12キーのマトリクス、Encoder、XIAO ESP32S3／ESP32C6、LittleFS保存を追加確認する
 - ChainOSC for Windows: グローバルホットキー、重複検証、タスクトレイ、サインイン時起動、単一起動を追加確認する
 
-miniとnanoについては、それぞれのリポジトリにある`docs/TESTING.md`も実施します。
+mini、nano、Padについては、それぞれのリポジトリにあるテスト文書も実施します。
 
 ## 12. リリース判定の目安
 
