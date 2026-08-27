@@ -165,6 +165,8 @@ JSON Schema Draft 2020-12の標準キーワードだけでは、次を正確に�
 
 Schemaには対応する`x-chainosc-*`注釈を付けています。製品のImporterとシリーズ共通テストでは、これらの意味検証も実施します。
 
+Importerが検証失敗時に返す共通Error Code、拒否条件、日本語・英語メッセージは、[`ChainOSC Device Preset Import Error Registry v1`](DEVICE_PRESET_ERROR_REGISTRY_V1.md)で定義します。
+
 ## 変更方針
 
 - v1の正規出力へ任意項目を追加する場合でも、5製品のExporter、Schema、fixture、共通テストを同時に更新します。

@@ -1,0 +1,23 @@
+{
+  "registry": "ChainOSC-device-preset-import-errors",
+  "registryVersion": 1,
+  "presetSchemaVersion": 1,
+  "fixtures": {
+    "invalid/empty.json": "E_PRESET_FORMAT_INVALID",
+    "invalid/malformed.json": "E_PRESET_JSON_MALFORMED",
+    "invalid/wrong-format.json": "E_PRESET_FORMAT_INVALID",
+    "invalid/unsupported-schema.json": "E_PRESET_SCHEMA_UNSUPPORTED",
+    "invalid/key-address-without-slash.json": "E_OSC_ADDRESS_INVALID",
+    "invalid/key-address-too-long.json": "E_OSC_ADDRESS_TOO_LONG",
+    "invalid/key-value-too-long.json": "E_OSC_VALUE_TOO_LONG",
+    "invalid/key-invalid-int.json": "E_OSC_INT32_INVALID",
+    "invalid/key-int32-underflow.json": "E_OSC_INT32_INVALID",
+    "invalid/key-int32-overflow.json": "E_OSC_INT32_INVALID",
+    "invalid/key-float32-nan.json": "E_OSC_FLOAT32_INVALID",
+    "invalid/key-float32-infinity.json": "E_OSC_FLOAT32_INVALID",
+    "invalid/key-float32-overflow.json": "E_OSC_FLOAT32_INVALID",
+    "invalid/key-nine-messages.json": "E_OSC_MESSAGE_COUNT_EXCEEDED",
+    "invalid/key-sequence-zero-step.json": "E_SEQUENCE_STEP_ZERO",
+    "invalid/key-sequence-wrong-direction.json": "E_SEQUENCE_DIRECTION_INVALID"
+  }
+}

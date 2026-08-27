@@ -201,6 +201,8 @@ Type  = Float
 
 ## 3. Keyプリセット相互互換
 
+Device Preset Importerのエラー意味と期待Error Codeは、[`ChainOSC Device Preset Import Error Registry v1`](DEVICE_PRESET_ERROR_REGISTRY_V1.md)および[`test-data/device-presets/expected-errors.json`](test-data/device-presets/expected-errors.json)を参照します。Error Code対応後の製品では、不正fixtureの拒否と設定不変性に加え、期待Error Codeが一致することも確認します。
+
 ### SERIES-PRESET-KEY-01 エクスポート構造
 
 各製品からKeyプリセットをエクスポートします。
