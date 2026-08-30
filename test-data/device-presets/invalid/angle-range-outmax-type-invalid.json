@@ -1,0 +1,1 @@
+{"format":"ChainOSC-device-preset","schemaVersion":1,"deviceType":2,"deviceTypeName":"Angle","angle":{"address":"/chainosc/test/angle","use12bit":true,"deadband":8,"range":{"outMin":0,"outMax":"1","type":0}}}

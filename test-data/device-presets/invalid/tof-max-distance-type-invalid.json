@@ -1,0 +1,1 @@
+{"format":"ChainOSC-device-preset","schemaVersion":1,"deviceType":5,"deviceTypeName":"ToF","tof":{"address":"/chainosc/test/tof","deadband":10,"maxDistanceMm":"1000","nearValueHigh":false,"range":{"outMin":0,"outMax":1,"type":0}}}
