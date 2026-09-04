@@ -114,6 +114,7 @@
           "properties": {
             "rotationAddress": { "$ref": "#/$defs/oscAddress" },
             "sendIncrement": { "type": "boolean" },
+            "wrapAround": { "type": "boolean", "default": true },
             "absoluteInputMin": { "type": "number" },
             "absoluteInputMax": { "type": "number" },
             "incrementScale": { "type": "number" },

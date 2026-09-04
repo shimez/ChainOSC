@@ -111,10 +111,11 @@ ToFの`range.type`はFloatまたはIntだけなので、0または1です。
 
 ## Encoder
 
-`encoder`は次の項目をすべて持ちます。
+`encoder`は次の項目を持ちます（`wrapAround`のみ任意、その他は必須）。
 
 - `rotationAddress`: OSC Address
 - `sendIncrement`: Boolean
+- `wrapAround`: Boolean（省略時は`true`）。絶対値モードで範囲の端から反対端へループするかを指定
 - `absoluteInputMin`: Number
 - `absoluteInputMax`: Number
 - `incrementScale`: Number
@@ -122,6 +123,10 @@ ToFの`range.type`はFloatまたはIntだけなので、0または1です。
 - `clickMode`: 0または1
 - `press`、`release`: Encoder ClickのOSC Message配列（合計8件以下）
 - `sequence`: Encoder ClickのSequence設定
+
+`wrapAround`は後方互換性のため任意項目です。Exporterは常に出力し、
+旧プリセットのように項目がない場合、Importerは従来動作の`true`として扱います。
+`sendIncrement: true`の増分モードでは、この項目は動作に影響しません。
 
 ## Angle
 
