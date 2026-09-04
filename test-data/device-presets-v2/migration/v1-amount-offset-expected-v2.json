@@ -1,0 +1,1 @@
+{"format":"ChainOSC-device-preset","schemaVersion":2,"deviceType":1,"deviceTypeName":"Encoder","encoder":{"rotationAddress":"/migration/encoder","rotationMode":"amount","rangeSteps":20,"wrap":false,"outputMin":1,"outputMax":0,"outputType":2,"clickMode":0,"press":[],"release":[],"sequence":{"address":"/migration/sequence","type":1,"start":0,"end":3,"step":1}}}

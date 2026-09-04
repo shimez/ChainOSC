@@ -1,0 +1,41 @@
+{
+  "format": "ChainOSC-device-preset-v2-migration-cases",
+  "version": 1,
+  "cases": [
+    {
+      "id": "MIG-AMOUNT-ZERO-BASED",
+      "input": "v1-amount-zero-based-input.json",
+      "expected": "v1-amount-zero-based-expected-v2.json",
+      "notes": ["rangeSteps = 20", "logicalPosition is reset to 0", "v1 wrap endpoint semantics are not lossless"]
+    },
+    {
+      "id": "MIG-AMOUNT-OFFSET",
+      "input": "v1-amount-offset-input.json",
+      "expected": "v1-amount-offset-expected-v2.json",
+      "notes": ["absoluteInputMin offset is discarded", "rangeSteps = 20", "reverse output endpoints remain valid"]
+    },
+    {
+      "id": "MIG-AMOUNT-FRACTIONAL-REJECT",
+      "input": "v1-amount-fractional-span-rejected.json",
+      "expectedError": "E_PRESET_DEVICE_SETTING_INVALID"
+    },
+    {
+      "id": "MIG-DIRECTION-FLOAT-CLAMP",
+      "input": "v1-increment-float-input.json",
+      "expected": "v1-increment-float-expected-v2.json",
+      "notes": ["CCW becomes 0.0 because v1 output range is 0..1", "multi-step delta behavior is not lossless"]
+    },
+    {
+      "id": "MIG-DIRECTION-INT-ROUND",
+      "input": "v1-increment-int-input.json",
+      "expected": "v1-increment-int-expected-v2.json",
+      "notes": ["v1 lroundf-equivalent conversion is applied after clamp"]
+    },
+    {
+      "id": "MIG-DIRECTION-STRING",
+      "input": "v1-increment-string-input.json",
+      "expected": "v1-increment-string-expected-v2.json",
+      "notes": ["v1 numeric String output uses exactly three decimal places"]
+    }
+  ]
+}

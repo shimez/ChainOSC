@@ -1,0 +1,205 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/shimez/ChainOSC/main/schemas/chainosc-device-preset-v2.schema.json",
+  "title": "ChainOSC Device Preset JSON Format v2",
+  "description": "Canonical Device Preset v2 output for Key and Encoder. Sensor device v2 formats are intentionally not yet defined.",
+  "oneOf": [
+    { "$ref": "#/$defs/keyPreset" },
+    { "$ref": "#/$defs/encoderAmountPreset" },
+    { "$ref": "#/$defs/encoderDirectionFloatPreset" },
+    { "$ref": "#/$defs/encoderDirectionIntPreset" },
+    { "$ref": "#/$defs/encoderDirectionStringPreset" }
+  ],
+  "$defs": {
+    "oscAddress": {
+      "type": "string",
+      "pattern": "^/[^\\s#*,?\\[\\]{}]*$",
+      "x-chainosc-maxUtf8Bytes": 192
+    },
+    "oscType": { "type": "integer", "enum": [0, 1, 2] },
+    "finiteFloat32": {
+      "type": "number",
+      "x-chainosc-finiteFloat32": true
+    },
+    "oscStringValue": {
+      "type": "string",
+      "x-chainosc-maxUtf8Bytes": 128
+    },
+    "oscMessage": {
+      "type": "object",
+      "required": ["address", "value", "type"],
+      "additionalProperties": false,
+      "properties": {
+        "address": { "$ref": "#/$defs/oscAddress" },
+        "value": {
+          "type": "string",
+          "x-chainosc-maxUtf8Bytes": 128,
+          "x-chainosc-valueMustMatchType": true
+        },
+        "type": { "$ref": "#/$defs/oscType" }
+      }
+    },
+    "messageArray": {
+      "type": "array",
+      "maxItems": 8,
+      "items": { "$ref": "#/$defs/oscMessage" }
+    },
+    "sequence": {
+      "type": "object",
+      "required": ["address", "type", "start", "end", "step"],
+      "additionalProperties": false,
+      "x-chainosc-stepMustMoveTowardEnd": true,
+      "properties": {
+        "address": { "$ref": "#/$defs/oscAddress" },
+        "type": { "$ref": "#/$defs/oscType" },
+        "start": { "$ref": "#/$defs/finiteFloat32" },
+        "end": { "$ref": "#/$defs/finiteFloat32" },
+        "step": {
+          "allOf": [
+            { "$ref": "#/$defs/finiteFloat32" },
+            { "not": { "const": 0 } }
+          ]
+        }
+      }
+    },
+    "buttonProperties": {
+      "type": "object",
+      "properties": {
+        "clickMode": { "type": "integer", "enum": [0, 1] },
+        "press": { "$ref": "#/$defs/messageArray" },
+        "release": { "$ref": "#/$defs/messageArray" },
+        "sequence": { "$ref": "#/$defs/sequence" }
+      }
+    },
+    "keyPreset": {
+      "type": "object",
+      "required": ["format", "schemaVersion", "deviceType", "deviceTypeName", "key"],
+      "additionalProperties": false,
+      "properties": {
+        "format": { "const": "ChainOSC-device-preset" },
+        "schemaVersion": { "const": 2 },
+        "deviceType": { "const": 3 },
+        "deviceTypeName": { "const": "Key" },
+        "key": {
+          "type": "object",
+          "required": ["mode", "press", "release", "sequence"],
+          "additionalProperties": false,
+          "x-chainosc-pressReleaseMaxItems": 8,
+          "properties": {
+            "mode": { "type": "integer", "enum": [0, 1] },
+            "press": { "$ref": "#/$defs/messageArray" },
+            "release": { "$ref": "#/$defs/messageArray" },
+            "sequence": { "$ref": "#/$defs/sequence" }
+          }
+        }
+      }
+    },
+    "encoderAmount": {
+      "type": "object",
+      "required": ["rotationAddress", "rotationMode", "rangeSteps", "wrap", "outputMin", "outputMax", "outputType", "clickMode", "press", "release", "sequence"],
+      "additionalProperties": false,
+      "x-chainosc-pressReleaseMaxItems": 8,
+      "x-chainosc-amountStringFormat": "fixed-3-decimals; normalize -0.000 to 0.000",
+      "properties": {
+        "rotationAddress": { "$ref": "#/$defs/oscAddress" },
+        "rotationMode": { "const": "amount" },
+        "rangeSteps": { "type": "integer", "minimum": 1, "maximum": 65535 },
+        "wrap": { "type": "boolean" },
+        "outputMin": { "$ref": "#/$defs/finiteFloat32" },
+        "outputMax": { "$ref": "#/$defs/finiteFloat32" },
+        "outputType": { "$ref": "#/$defs/oscType" },
+        "clickMode": { "type": "integer", "enum": [0, 1] },
+        "press": { "$ref": "#/$defs/messageArray" },
+        "release": { "$ref": "#/$defs/messageArray" },
+        "sequence": { "$ref": "#/$defs/sequence" }
+      }
+    },
+    "encoderDirectionFloat": {
+      "type": "object",
+      "required": ["rotationAddress", "rotationMode", "clockwiseValue", "counterClockwiseValue", "outputType", "clickMode", "press", "release", "sequence"],
+      "additionalProperties": false,
+      "x-chainosc-pressReleaseMaxItems": 8,
+      "properties": {
+        "rotationAddress": { "$ref": "#/$defs/oscAddress" },
+        "rotationMode": { "const": "direction" },
+        "clockwiseValue": { "$ref": "#/$defs/finiteFloat32" },
+        "counterClockwiseValue": { "$ref": "#/$defs/finiteFloat32" },
+        "outputType": { "const": 0 },
+        "clickMode": { "type": "integer", "enum": [0, 1] },
+        "press": { "$ref": "#/$defs/messageArray" },
+        "release": { "$ref": "#/$defs/messageArray" },
+        "sequence": { "$ref": "#/$defs/sequence" }
+      }
+    },
+    "encoderDirectionInt": {
+      "type": "object",
+      "required": ["rotationAddress", "rotationMode", "clockwiseValue", "counterClockwiseValue", "outputType", "clickMode", "press", "release", "sequence"],
+      "additionalProperties": false,
+      "x-chainosc-pressReleaseMaxItems": 8,
+      "properties": {
+        "rotationAddress": { "$ref": "#/$defs/oscAddress" },
+        "rotationMode": { "const": "direction" },
+        "clockwiseValue": { "type": "integer", "minimum": -2147483648, "maximum": 2147483647 },
+        "counterClockwiseValue": { "type": "integer", "minimum": -2147483648, "maximum": 2147483647 },
+        "outputType": { "const": 1 },
+        "clickMode": { "type": "integer", "enum": [0, 1] },
+        "press": { "$ref": "#/$defs/messageArray" },
+        "release": { "$ref": "#/$defs/messageArray" },
+        "sequence": { "$ref": "#/$defs/sequence" }
+      }
+    },
+    "encoderDirectionString": {
+      "type": "object",
+      "required": ["rotationAddress", "rotationMode", "clockwiseValue", "counterClockwiseValue", "outputType", "clickMode", "press", "release", "sequence"],
+      "additionalProperties": false,
+      "x-chainosc-pressReleaseMaxItems": 8,
+      "properties": {
+        "rotationAddress": { "$ref": "#/$defs/oscAddress" },
+        "rotationMode": { "const": "direction" },
+        "clockwiseValue": { "$ref": "#/$defs/oscStringValue" },
+        "counterClockwiseValue": { "$ref": "#/$defs/oscStringValue" },
+        "outputType": { "const": 2 },
+        "clickMode": { "type": "integer", "enum": [0, 1] },
+        "press": { "$ref": "#/$defs/messageArray" },
+        "release": { "$ref": "#/$defs/messageArray" },
+        "sequence": { "$ref": "#/$defs/sequence" }
+      }
+    },
+    "encoderRoot": {
+      "type": "object",
+      "required": ["format", "schemaVersion", "deviceType", "deviceTypeName", "encoder"],
+      "additionalProperties": false,
+      "properties": {
+        "format": { "const": "ChainOSC-device-preset" },
+        "schemaVersion": { "const": 2 },
+        "deviceType": { "const": 1 },
+        "deviceTypeName": { "const": "Encoder" },
+        "encoder": {}
+      }
+    },
+    "encoderAmountPreset": {
+      "allOf": [
+        { "$ref": "#/$defs/encoderRoot" },
+        { "properties": { "encoder": { "$ref": "#/$defs/encoderAmount" } } }
+      ]
+    },
+    "encoderDirectionFloatPreset": {
+      "allOf": [
+        { "$ref": "#/$defs/encoderRoot" },
+        { "properties": { "encoder": { "$ref": "#/$defs/encoderDirectionFloat" } } }
+      ]
+    },
+    "encoderDirectionIntPreset": {
+      "allOf": [
+        { "$ref": "#/$defs/encoderRoot" },
+        { "properties": { "encoder": { "$ref": "#/$defs/encoderDirectionInt" } } }
+      ]
+    },
+    "encoderDirectionStringPreset": {
+      "allOf": [
+        { "$ref": "#/$defs/encoderRoot" },
+        { "properties": { "encoder": { "$ref": "#/$defs/encoderDirectionString" } } }
+      ]
+    }
+  }
+}

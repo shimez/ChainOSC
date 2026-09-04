@@ -11,6 +11,17 @@
 
 Exporterを変更した場合は、出力が対応するcanonical fixtureと同じ構造・型・意味を持つことを確認します。空白、数値の小数桁数、オブジェクトのプロパティ順序は比較対象外です。
 
+## Device Preset v2開発データ
+
+`device-presets-v2/`には、開発中のKey／Encoder v2仕様に対するSchema fixture、
+v1 Migration例、Encoder共通ランタイムテストベクトルがあります。
+
+- 仕様: [`../DEVICE_PRESET_FORMAT_V2.md`](../DEVICE_PRESET_FORMAT_V2.md)
+- JSON Schema: [`../schemas/chainosc-device-preset-v2.schema.json`](../schemas/chainosc-device-preset-v2.schema.json)
+- テストデータ: [`device-presets-v2/README.md`](device-presets-v2/README.md)
+
+各製品のv2実装が完了するまで、v2 fixtureを現行Exporterの回帰基準として扱いません。
+
 ## 正常系プリセット
 
 | ファイル | 主な用途 | 対応テスト |

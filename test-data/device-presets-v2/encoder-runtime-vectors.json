@@ -1,0 +1,102 @@
+{
+  "format": "ChainOSC-encoder-v2-runtime-vectors",
+  "version": 1,
+  "numericTolerance": 0.000001,
+  "cases": [
+    {
+      "id": "AMOUNT-RESET-NO-SEND",
+      "settings": {"rotationMode":"amount","rangeSteps":20,"wrap":true,"outputMin":0.0,"outputMax":1.0,"outputType":0},
+      "initialState": {"logicalPosition":13},
+      "events": [{"operation":"applyPreset"}],
+      "expected": [{"logicalPosition":0,"send":false}]
+    },
+    {
+      "id": "AMOUNT-WRAP-INCLUDES-BOTH-ENDS",
+      "settings": {"rotationMode":"amount","rangeSteps":20,"wrap":true,"outputMin":0.0,"outputMax":1.0,"outputType":0},
+      "initialState": {"logicalPosition":19},
+      "events": [{"delta":1},{"delta":1},{"delta":-1},{"delta":5}],
+      "expected": [
+        {"logicalPosition":20,"send":true,"value":1.0},
+        {"logicalPosition":0,"send":true,"value":0.0},
+        {"logicalPosition":20,"send":true,"value":1.0},
+        {"logicalPosition":4,"send":true,"value":0.2}
+      ]
+    },
+    {
+      "id": "AMOUNT-CLAMP-HAS-NO-HIDDEN-OVERSHOOT",
+      "settings": {"rotationMode":"amount","rangeSteps":20,"wrap":false,"outputMin":0.0,"outputMax":1.0,"outputType":0},
+      "initialState": {"logicalPosition":19},
+      "events": [{"delta":5},{"delta":-1},{"delta":-50},{"delta":1}],
+      "expected": [
+        {"logicalPosition":20,"send":true,"value":1.0},
+        {"logicalPosition":19,"send":true,"value":0.95},
+        {"logicalPosition":0,"send":true,"value":0.0},
+        {"logicalPosition":1,"send":true,"value":0.05}
+      ]
+    },
+    {
+      "id": "AMOUNT-REVERSED-OUTPUT",
+      "settings": {"rotationMode":"amount","rangeSteps":4,"wrap":false,"outputMin":1.0,"outputMax":-1.0,"outputType":0},
+      "initialState": {"logicalPosition":0},
+      "events": [{"delta":1},{"delta":1},{"delta":2}],
+      "expected": [
+        {"logicalPosition":1,"send":true,"value":0.5},
+        {"logicalPosition":2,"send":true,"value":0.0},
+        {"logicalPosition":4,"send":true,"value":-1.0}
+      ]
+    },
+    {
+      "id": "AMOUNT-STRING-FIXED-THREE-DECIMALS",
+      "settings": {"rotationMode":"amount","rangeSteps":4,"wrap":false,"outputMin":-0.0004,"outputMax":0.0004,"outputType":2},
+      "initialState": {"logicalPosition":0},
+      "events": [{"delta":1},{"delta":1},{"delta":2}],
+      "expected": [
+        {"logicalPosition":1,"send":true,"value":"0.000"},
+        {"logicalPosition":2,"send":true,"value":"0.000"},
+        {"logicalPosition":4,"send":true,"value":"0.001"}
+      ]
+    },
+    {
+      "id": "DIRECTION-USES-SIGN-ONCE",
+      "settings": {"rotationMode":"direction","clockwiseValue":0.1,"counterClockwiseValue":-0.25,"outputType":0},
+      "events": [{"delta":1},{"delta":5},{"delta":-1},{"delta":-7},{"delta":0}],
+      "expected": [
+        {"send":true,"value":0.1},
+        {"send":true,"value":0.1},
+        {"send":true,"value":-0.25},
+        {"send":true,"value":-0.25},
+        {"send":false}
+      ]
+    },
+    {
+      "id": "DIRECTION-STRING-VALUES-ARE-LITERAL",
+      "settings": {"rotationMode":"direction","clockwiseValue":"next","counterClockwiseValue":"prev","outputType":2},
+      "events": [{"delta":3},{"delta":-2}],
+      "expected": [{"send":true,"value":"next"},{"send":true,"value":"prev"}]
+    },
+    {
+      "id": "RECONNECT-BASELINE-PRESERVES-AMOUNT-POSITION",
+      "identity": "00112233445566778899AABB",
+      "settings": {"rotationMode":"amount","rangeSteps":20,"wrap":false,"outputMin":0.0,"outputMax":1.0,"outputType":0},
+      "initialState": {"logicalPosition":7,"rawBaseline":120,"baselineValid":true},
+      "events": [
+        {"operation":"continuityLost"},
+        {"operation":"rawSample","raw":3},
+        {"operation":"rawSample","raw":4}
+      ],
+      "expected": [
+        {"logicalPosition":7,"baselineValid":false,"send":false},
+        {"logicalPosition":7,"rawBaseline":3,"baselineValid":true,"send":false},
+        {"logicalPosition":8,"rawBaseline":4,"baselineValid":true,"send":true,"value":0.4}
+      ]
+    },
+    {
+      "id": "DIFFERENT-UID-RESETS-AMOUNT-POSITION",
+      "identity": "00112233445566778899AABB",
+      "settings": {"rotationMode":"amount","rangeSteps":20,"wrap":false,"outputMin":0.0,"outputMax":1.0,"outputType":0},
+      "initialState": {"logicalPosition":7,"rawBaseline":120,"baselineValid":true},
+      "events": [{"operation":"replaceIdentity","identity":"FFEEDDCCBBAA998877665544","raw":50}],
+      "expected": [{"logicalPosition":0,"rawBaseline":50,"baselineValid":true,"send":false}]
+    }
+  ]
+}

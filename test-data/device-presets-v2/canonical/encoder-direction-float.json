@@ -1,0 +1,1 @@
+{"format":"ChainOSC-device-preset","schemaVersion":2,"deviceType":1,"deviceTypeName":"Encoder","encoder":{"rotationAddress":"/chainosc/fixture/encoder","rotationMode":"direction","clockwiseValue":0.1,"counterClockwiseValue":-0.25,"outputType":0,"clickMode":0,"press":[],"release":[],"sequence":{"address":"/chainosc/fixture/encoder/sequence","type":1,"start":0,"end":3,"step":1}}}

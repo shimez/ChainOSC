@@ -6,7 +6,7 @@ This project's software, website, and documentation are created in collaboration
 
 ## Device Preset JSON
 
-ChainOSCシリーズ共通の現行Exporter正規出力は、[`ChainOSC Device Preset JSON Format v1`](DEVICE_PRESET_FORMAT_V1.md)として文書化しています。Importerのエラー意味と表示内容は、[`ChainOSC Device Preset Import Error Registry v1`](DEVICE_PRESET_ERROR_REGISTRY_V1.md)で定義します。機械可読なJSON Schema、fixture、期待Error Codeも同じリポジトリで管理します。
+ChainOSCシリーズ共通の現行Exporter正規出力は、[`ChainOSC Device Preset JSON Format v1`](DEVICE_PRESET_FORMAT_V1.md)として文書化しています。開発中のKey／Encoder v2仕様は[`ChainOSC Device Preset JSON Format v2`](DEVICE_PRESET_FORMAT_V2.md)で定義し、製品実装が完了するまでは現行Exporter仕様と区別します。Importerのエラー意味と表示内容は、[`ChainOSC Device Preset Import Error Registry v1`](DEVICE_PRESET_ERROR_REGISTRY_V1.md)で定義します。機械可読なJSON Schema、fixture、期待Error Codeも同じリポジトリで管理します。
 
 ChainOSC is a family of open-source OSC controllers for M5Stack Chain devices
 and Windows global hotkeys.

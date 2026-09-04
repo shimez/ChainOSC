@@ -1,0 +1,19 @@
+{
+  "registry": "ChainOSC-device-preset-import-errors",
+  "registryVersion": 1,
+  "presetSchemaVersion": 2,
+  "fixtures": {
+    "invalid/encoder-amount-range-zero.json": "E_PRESET_DEVICE_SETTING_INVALID",
+    "invalid/encoder-amount-range-fractional.json": "E_PRESET_DEVICE_SETTING_INVALID",
+    "invalid/encoder-amount-range-too-large.json": "E_PRESET_DEVICE_SETTING_INVALID",
+    "invalid/encoder-amount-wrap-type-invalid.json": "E_PRESET_FIELD_TYPE_INVALID",
+    "invalid/encoder-amount-has-direction-fields.json": "E_PRESET_DEVICE_SETTING_INVALID",
+    "invalid/encoder-direction-has-amount-fields.json": "E_PRESET_DEVICE_SETTING_INVALID",
+    "invalid/encoder-direction-float-value-type-invalid.json": "E_PRESET_FIELD_TYPE_INVALID",
+    "invalid/encoder-direction-int-fractional.json": "E_PRESET_FIELD_TYPE_INVALID",
+    "invalid/encoder-direction-string-value-type-invalid.json": "E_PRESET_FIELD_TYPE_INVALID",
+    "invalid/encoder-rotation-mode-invalid.json": "E_PRESET_DEVICE_SETTING_INVALID",
+    "invalid/encoder-output-type-invalid.json": "E_OSC_TYPE_INVALID",
+    "invalid/encoder-direction-required-field-missing.json": "E_PRESET_REQUIRED_FIELD_MISSING"
+  }
+}
