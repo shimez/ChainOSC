@@ -62,15 +62,6 @@
         }
       }
     },
-    "buttonProperties": {
-      "type": "object",
-      "properties": {
-        "clickMode": { "type": "integer", "enum": [0, 1] },
-        "press": { "$ref": "#/$defs/messageArray" },
-        "release": { "$ref": "#/$defs/messageArray" },
-        "sequence": { "$ref": "#/$defs/sequence" }
-      }
-    },
     "keyPreset": {
       "type": "object",
       "required": ["format", "schemaVersion", "deviceType", "deviceTypeName", "key"],
@@ -96,19 +87,21 @@
     },
     "encoderAmount": {
       "type": "object",
-      "required": ["rotationAddress", "rotationMode", "rangeSteps", "wrap", "outputMin", "outputMax", "outputType", "clickMode", "press", "release", "sequence"],
+      "required": ["rotationAddress", "rotationMode", "rangeSteps", "wrap", "clockwiseIncreases", "outputMin", "outputMax", "outputType", "pushMode", "press", "release", "sequence"],
       "additionalProperties": false,
       "x-chainosc-pressReleaseMaxItems": 8,
       "x-chainosc-amountStringFormat": "fixed-3-decimals; normalize -0.000 to 0.000",
+      "x-chainosc-amountOutputValid": true,
       "properties": {
         "rotationAddress": { "$ref": "#/$defs/oscAddress" },
         "rotationMode": { "const": "amount" },
         "rangeSteps": { "type": "integer", "minimum": 1, "maximum": 65535 },
         "wrap": { "type": "boolean" },
+        "clockwiseIncreases": { "type": "boolean" },
         "outputMin": { "$ref": "#/$defs/finiteFloat32" },
         "outputMax": { "$ref": "#/$defs/finiteFloat32" },
         "outputType": { "$ref": "#/$defs/oscType" },
-        "clickMode": { "type": "integer", "enum": [0, 1] },
+        "pushMode": { "type": "integer", "enum": [0, 1] },
         "press": { "$ref": "#/$defs/messageArray" },
         "release": { "$ref": "#/$defs/messageArray" },
         "sequence": { "$ref": "#/$defs/sequence" }
@@ -116,7 +109,7 @@
     },
     "encoderDirectionFloat": {
       "type": "object",
-      "required": ["rotationAddress", "rotationMode", "clockwiseValue", "counterClockwiseValue", "outputType", "clickMode", "press", "release", "sequence"],
+      "required": ["rotationAddress", "rotationMode", "clockwiseValue", "counterClockwiseValue", "outputType", "pushMode", "press", "release", "sequence"],
       "additionalProperties": false,
       "x-chainosc-pressReleaseMaxItems": 8,
       "properties": {
@@ -125,7 +118,7 @@
         "clockwiseValue": { "$ref": "#/$defs/finiteFloat32" },
         "counterClockwiseValue": { "$ref": "#/$defs/finiteFloat32" },
         "outputType": { "const": 0 },
-        "clickMode": { "type": "integer", "enum": [0, 1] },
+        "pushMode": { "type": "integer", "enum": [0, 1] },
         "press": { "$ref": "#/$defs/messageArray" },
         "release": { "$ref": "#/$defs/messageArray" },
         "sequence": { "$ref": "#/$defs/sequence" }
@@ -133,7 +126,7 @@
     },
     "encoderDirectionInt": {
       "type": "object",
-      "required": ["rotationAddress", "rotationMode", "clockwiseValue", "counterClockwiseValue", "outputType", "clickMode", "press", "release", "sequence"],
+      "required": ["rotationAddress", "rotationMode", "clockwiseValue", "counterClockwiseValue", "outputType", "pushMode", "press", "release", "sequence"],
       "additionalProperties": false,
       "x-chainosc-pressReleaseMaxItems": 8,
       "properties": {
@@ -142,7 +135,7 @@
         "clockwiseValue": { "type": "integer", "minimum": -2147483648, "maximum": 2147483647 },
         "counterClockwiseValue": { "type": "integer", "minimum": -2147483648, "maximum": 2147483647 },
         "outputType": { "const": 1 },
-        "clickMode": { "type": "integer", "enum": [0, 1] },
+        "pushMode": { "type": "integer", "enum": [0, 1] },
         "press": { "$ref": "#/$defs/messageArray" },
         "release": { "$ref": "#/$defs/messageArray" },
         "sequence": { "$ref": "#/$defs/sequence" }
@@ -150,7 +143,7 @@
     },
     "encoderDirectionString": {
       "type": "object",
-      "required": ["rotationAddress", "rotationMode", "clockwiseValue", "counterClockwiseValue", "outputType", "clickMode", "press", "release", "sequence"],
+      "required": ["rotationAddress", "rotationMode", "clockwiseValue", "counterClockwiseValue", "outputType", "pushMode", "press", "release", "sequence"],
       "additionalProperties": false,
       "x-chainosc-pressReleaseMaxItems": 8,
       "properties": {
@@ -159,7 +152,7 @@
         "clockwiseValue": { "$ref": "#/$defs/oscStringValue" },
         "counterClockwiseValue": { "$ref": "#/$defs/oscStringValue" },
         "outputType": { "const": 2 },
-        "clickMode": { "type": "integer", "enum": [0, 1] },
+        "pushMode": { "type": "integer", "enum": [0, 1] },
         "press": { "$ref": "#/$defs/messageArray" },
         "release": { "$ref": "#/$defs/messageArray" },
         "sequence": { "$ref": "#/$defs/sequence" }

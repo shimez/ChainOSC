@@ -5,14 +5,14 @@
   "cases": [
     {
       "id": "AMOUNT-RESET-NO-SEND",
-      "settings": {"rotationMode":"amount","rangeSteps":20,"wrap":true,"outputMin":0.0,"outputMax":1.0,"outputType":0},
+      "settings": {"rotationMode":"amount","clockwiseIncreases":true,"rangeSteps":20,"wrap":true,"outputMin":0.0,"outputMax":1.0,"outputType":0},
       "initialState": {"logicalPosition":13},
-      "events": [{"operation":"applyPreset"}],
-      "expected": [{"logicalPosition":0,"send":false}]
+      "events": [{"operation":"applyPreset"},{"delta":1}],
+      "expected": [{"send":false},{"logicalPosition":1,"send":true,"value":0.05}]
     },
     {
       "id": "AMOUNT-WRAP-INCLUDES-BOTH-ENDS",
-      "settings": {"rotationMode":"amount","rangeSteps":20,"wrap":true,"outputMin":0.0,"outputMax":1.0,"outputType":0},
+      "settings": {"rotationMode":"amount","clockwiseIncreases":true,"rangeSteps":20,"wrap":true,"outputMin":0.0,"outputMax":1.0,"outputType":0},
       "initialState": {"logicalPosition":19},
       "events": [{"delta":1},{"delta":1},{"delta":-1},{"delta":5}],
       "expected": [
@@ -24,7 +24,7 @@
     },
     {
       "id": "AMOUNT-CLAMP-HAS-NO-HIDDEN-OVERSHOOT",
-      "settings": {"rotationMode":"amount","rangeSteps":20,"wrap":false,"outputMin":0.0,"outputMax":1.0,"outputType":0},
+      "settings": {"rotationMode":"amount","clockwiseIncreases":true,"rangeSteps":20,"wrap":false,"outputMin":0.0,"outputMax":1.0,"outputType":0},
       "initialState": {"logicalPosition":19},
       "events": [{"delta":5},{"delta":-1},{"delta":-50},{"delta":1}],
       "expected": [
@@ -35,25 +35,35 @@
       ]
     },
     {
-      "id": "AMOUNT-REVERSED-OUTPUT",
-      "settings": {"rotationMode":"amount","rangeSteps":4,"wrap":false,"outputMin":1.0,"outputMax":-1.0,"outputType":0},
-      "initialState": {"logicalPosition":0},
-      "events": [{"delta":1},{"delta":1},{"delta":2}],
+      "id": "AMOUNT-COUNTER-CLOCKWISE-INCREASES",
+      "settings": {"rotationMode":"amount","clockwiseIncreases":false,"rangeSteps":4,"wrap":false,"outputMin":0.0,"outputMax":1.0,"outputType":0},
+      "initialState": {"logicalPosition":2},
+      "events": [{"delta":1},{"delta":-1},{"delta":-2}],
       "expected": [
-        {"logicalPosition":1,"send":true,"value":0.5},
-        {"logicalPosition":2,"send":true,"value":0.0},
-        {"logicalPosition":4,"send":true,"value":-1.0}
+        {"logicalPosition":1,"send":true,"value":0.25},
+        {"logicalPosition":2,"send":true,"value":0.5},
+        {"logicalPosition":4,"send":true,"value":1.0}
+      ]
+    },
+    {
+      "id": "AMOUNT-STOP-ENDPOINT-RESENDS",
+      "settings": {"rotationMode":"amount","clockwiseIncreases":true,"rangeSteps":4,"wrap":false,"outputMin":0.0,"outputMax":1.0,"outputType":0},
+      "initialState": {"logicalPosition":4},
+      "events": [{"delta":1},{"delta":3}],
+      "expected": [
+        {"logicalPosition":4,"send":true,"value":1.0},
+        {"logicalPosition":4,"send":true,"value":1.0}
       ]
     },
     {
       "id": "AMOUNT-STRING-FIXED-THREE-DECIMALS",
-      "settings": {"rotationMode":"amount","rangeSteps":4,"wrap":false,"outputMin":-0.0004,"outputMax":0.0004,"outputType":2},
+      "settings": {"rotationMode":"amount","clockwiseIncreases":true,"rangeSteps":4,"wrap":false,"outputMin":-0.0004,"outputMax":0.0004,"outputType":2},
       "initialState": {"logicalPosition":0},
       "events": [{"delta":1},{"delta":1},{"delta":2}],
       "expected": [
         {"logicalPosition":1,"send":true,"value":"0.000"},
         {"logicalPosition":2,"send":true,"value":"0.000"},
-        {"logicalPosition":4,"send":true,"value":"0.001"}
+        {"logicalPosition":4,"send":true,"value":"0.000"}
       ]
     },
     {
@@ -77,7 +87,7 @@
     {
       "id": "RECONNECT-BASELINE-PRESERVES-AMOUNT-POSITION",
       "identity": "00112233445566778899AABB",
-      "settings": {"rotationMode":"amount","rangeSteps":20,"wrap":false,"outputMin":0.0,"outputMax":1.0,"outputType":0},
+      "settings": {"rotationMode":"amount","clockwiseIncreases":true,"rangeSteps":20,"wrap":false,"outputMin":0.0,"outputMax":1.0,"outputType":0},
       "initialState": {"logicalPosition":7,"rawBaseline":120,"baselineValid":true},
       "events": [
         {"operation":"continuityLost"},
@@ -93,10 +103,68 @@
     {
       "id": "DIFFERENT-UID-RESETS-AMOUNT-POSITION",
       "identity": "00112233445566778899AABB",
-      "settings": {"rotationMode":"amount","rangeSteps":20,"wrap":false,"outputMin":0.0,"outputMax":1.0,"outputType":0},
+      "settings": {"rotationMode":"amount","clockwiseIncreases":true,"rangeSteps":20,"wrap":false,"outputMin":0.0,"outputMax":1.0,"outputType":0},
       "initialState": {"logicalPosition":7,"rawBaseline":120,"baselineValid":true},
       "events": [{"operation":"replaceIdentity","identity":"FFEEDDCCBBAA998877665544","raw":50}],
       "expected": [{"logicalPosition":0,"rawBaseline":50,"baselineValid":true,"send":false}]
+    },
+    {
+      "id": "AMOUNT-INT-ROUNDS-HALF-AWAY-FROM-ZERO",
+      "settings": {"rotationMode":"amount","clockwiseIncreases":true,"rangeSteps":3,"wrap":false,"outputMin":-1.5,"outputMax":1.5,"outputType":1},
+      "initialState": {"logicalPosition":0},
+      "events": [{"delta":1},{"delta":1},{"delta":1}],
+      "expected": [
+        {"logicalPosition":1,"send":true,"value":-1},
+        {"logicalPosition":2,"send":true,"value":1},
+        {"logicalPosition":3,"send":true,"value":2}
+      ]
+    },
+    {
+      "id": "AMOUNT-ACTIVE-SETTING-CHANGES-RESET",
+      "settings": {"rotationMode":"amount","clockwiseIncreases":true,"rangeSteps":20,"wrap":false,"outputMin":0.0,"outputMax":1.0,"outputType":0},
+      "initialState": {"logicalPosition":7},
+      "events": [
+        {"operation":"updateSettings","changes":{"rangeSteps":21}},
+        {"delta":1},
+        {"operation":"updateSettings","changes":{"wrap":true}},
+        {"delta":1},
+        {"operation":"updateSettings","changes":{"clockwiseIncreases":false}},
+        {"delta":-1},
+        {"operation":"updateSettings","changes":{"outputMin":-1.0}},
+        {"delta":-1},
+        {"operation":"updateSettings","changes":{"outputMax":2.0}},
+        {"delta":-1},
+        {"operation":"updateSettings","changes":{"outputType":1}},
+        {"delta":-1}
+      ],
+      "expected": [
+        {"send":false},
+        {"logicalPosition":1,"send":true},
+        {"send":false},
+        {"logicalPosition":1,"send":true},
+        {"send":false},
+        {"logicalPosition":1,"send":true},
+        {"send":false},
+        {"logicalPosition":1,"send":true},
+        {"send":false},
+        {"logicalPosition":1,"send":true},
+        {"send":false},
+        {"logicalPosition":1,"send":true,"value":-1}
+      ]
+    },
+    {
+      "id": "CHANGE-TO-AMOUNT-MODE-RESETS",
+      "settings": {"rotationMode":"direction","clockwiseValue":1,"counterClockwiseValue":-1,"outputType":1},
+      "initialState": {"logicalPosition":7},
+      "events": [{"operation":"updateSettings","changes":{"rotationMode":"amount","clockwiseIncreases":true,"rangeSteps":20,"wrap":false,"outputMin":0.0,"outputMax":1.0,"outputType":0}},{"delta":1}],
+      "expected": [{"send":false},{"logicalPosition":1,"send":true,"value":0.05}]
+    },
+    {
+      "id": "AMOUNT-INACTIVE-DIRECTION-SETTING-CHANGES-DO-NOT-RESET",
+      "settings": {"rotationMode":"amount","clockwiseIncreases":true,"rangeSteps":20,"wrap":false,"outputMin":0.0,"outputMax":1.0,"outputType":0,"clockwiseValue":1,"counterClockwiseValue":-1},
+      "initialState": {"logicalPosition":7},
+      "events": [{"operation":"updateInactiveSettings","changes":{"clockwiseValue":10,"counterClockwiseValue":-5}},{"delta":1}],
+      "expected": [{"send":false},{"logicalPosition":8,"send":true,"value":0.4}]
     }
   ]
 }

@@ -1,0 +1,1 @@
+{"format":"ChainOSC-device-preset","schemaVersion":2,"deviceType":1,"deviceTypeName":"Encoder","encoder":{"rotationAddress":"/test/encoder","rotationMode":"amount","clockwiseIncreases":true,"rangeSteps":20,"wrap":true,"outputMin":1,"outputMax":1,"outputType":0,"pushMode":0,"press":[],"release":[],"sequence":{"address":"/test/sequence","type":1,"start":0,"end":1,"step":1}}}

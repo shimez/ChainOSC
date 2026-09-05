@@ -7,6 +7,8 @@
     "invalid/encoder-amount-range-fractional.json": "E_PRESET_DEVICE_SETTING_INVALID",
     "invalid/encoder-amount-range-too-large.json": "E_PRESET_DEVICE_SETTING_INVALID",
     "invalid/encoder-amount-wrap-type-invalid.json": "E_PRESET_FIELD_TYPE_INVALID",
+    "invalid/encoder-amount-increase-direction-missing.json": "E_PRESET_REQUIRED_FIELD_MISSING",
+    "invalid/encoder-amount-increase-direction-type-invalid.json": "E_PRESET_FIELD_TYPE_INVALID",
     "invalid/encoder-amount-has-direction-fields.json": "E_PRESET_DEVICE_SETTING_INVALID",
     "invalid/encoder-direction-has-amount-fields.json": "E_PRESET_DEVICE_SETTING_INVALID",
     "invalid/encoder-direction-float-value-type-invalid.json": "E_PRESET_FIELD_TYPE_INVALID",
@@ -14,6 +16,15 @@
     "invalid/encoder-direction-string-value-type-invalid.json": "E_PRESET_FIELD_TYPE_INVALID",
     "invalid/encoder-rotation-mode-invalid.json": "E_PRESET_DEVICE_SETTING_INVALID",
     "invalid/encoder-output-type-invalid.json": "E_OSC_TYPE_INVALID",
-    "invalid/encoder-direction-required-field-missing.json": "E_PRESET_REQUIRED_FIELD_MISSING"
+    "invalid/encoder-direction-required-field-missing.json": "E_PRESET_REQUIRED_FIELD_MISSING",
+    "invalid/encoder-v2-has-legacy-click-mode.json": "E_PRESET_DEVICE_SETTING_INVALID",
+    "invalid/encoder-amount-output-equal.json": "E_PRESET_DEVICE_SETTING_INVALID",
+    "invalid/encoder-amount-output-reversed.json": "E_PRESET_DEVICE_SETTING_INVALID",
+    "invalid/encoder-amount-mapping-overflow.json": "E_PRESET_DEVICE_SETTING_INVALID",
+    "invalid/encoder-amount-int-output-overflow.json": "E_PRESET_DEVICE_SETTING_INVALID",
+    "invalid/key-press-release-total-nine.json": "E_OSC_MESSAGE_COUNT_EXCEEDED",
+    "invalid/key-sequence-zero-step.json": "E_SEQUENCE_STEP_ZERO",
+    "invalid/key-sequence-wrong-direction.json": "E_SEQUENCE_DIRECTION_INVALID",
+    "invalid/encoder-amount-int-output-underflow.json": "E_PRESET_DEVICE_SETTING_INVALID"
   }
 }

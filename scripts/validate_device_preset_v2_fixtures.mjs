@@ -85,6 +85,49 @@ async function main() {
     allErrors: true,
     strict: false,
   });
+  ajv.addKeyword({
+    keyword: "x-chainosc-pressReleaseMaxItems",
+    schemaType: "number",
+    type: "object",
+    validate(limit, data) {
+      if (!Array.isArray(data?.press) || !Array.isArray(data?.release))
+        return true;
+      return data.press.length + data.release.length <= limit;
+    },
+  });
+  ajv.addKeyword({
+    keyword: "x-chainosc-stepMustMoveTowardEnd",
+    schemaType: "boolean",
+    type: "object",
+    validate(enabled, data) {
+      if (!enabled || typeof data?.start !== "number" ||
+          typeof data?.end !== "number" || typeof data?.step !== "number")
+        return true;
+      if (data.step === 0) return false;
+      return !((data.start < data.end && data.step < 0) ||
+               (data.start > data.end && data.step > 0));
+    },
+  });
+  ajv.addKeyword({
+    keyword: "x-chainosc-amountOutputValid",
+    schemaType: "boolean",
+    type: "object",
+    validate(enabled, data) {
+      if (!enabled || typeof data?.outputMin !== "number" ||
+          typeof data?.outputMax !== "number" ||
+          typeof data?.outputType !== "number") return true;
+      const outputMin = Math.fround(data.outputMin);
+      const outputMax = Math.fround(data.outputMax);
+      if (!Number.isFinite(outputMin) || !Number.isFinite(outputMax) ||
+          !(outputMin < outputMax) ||
+          !Number.isFinite(Math.fround(outputMax - outputMin))) return false;
+      if (data.outputType !== 1) return true;
+      const roundAwayFromZero = (value) =>
+        value < 0 ? -Math.round(-value) : Math.round(value);
+      return roundAwayFromZero(outputMin) >= -2147483648 &&
+             roundAwayFromZero(outputMax) <= 2147483647;
+    },
+  });
   const validate = ajv.compile(schema);
 
   const validFiles = [

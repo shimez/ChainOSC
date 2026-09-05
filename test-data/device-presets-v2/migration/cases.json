@@ -12,7 +12,7 @@
       "id": "MIG-AMOUNT-OFFSET",
       "input": "v1-amount-offset-input.json",
       "expected": "v1-amount-offset-expected-v2.json",
-      "notes": ["absoluteInputMin offset is discarded", "rangeSteps = 20", "reverse output endpoints remain valid"]
+      "notes": ["absoluteInputMin offset is discarded", "rangeSteps = 20", "outputMin and outputMax remain in ascending order"]
     },
     {
       "id": "MIG-AMOUNT-FRACTIONAL-REJECT",
