@@ -309,11 +309,40 @@ Keyと同じ型、件数、値域およびSequence方向のValidationを適用�
 Device Preset v2で押し込み操作を表す正式フィールド名は`pushMode`です。`clickMode`は
 Device Preset v2のフィールドではなく、v2 Importerは受理しません。
 
-### Device Preset v1からのMigration
+### Device Preset v1からのImportとMigration
 
-Importerは入力をまずDevice Preset v1としてParse・Validationし、成功した設定だけを
-メモリ上のv2モデルへ変換します。Migration成功だけを理由に永続設定を自動的に
-書き換えず、永続化は通常の明示的な保存操作に従います。
+Importerは入力をまずDevice Preset v1としてParse・Validationします。v1としてValidationに
+失敗した入力はImport Errorとして拒否し、Legacy fallbackの対象にはしません。
+
+v1として有効な設定は、v2へruntime semanticsを保持したまま変換できるかを判定します。
+
+```text
+valid Device Preset v1
+        |
+        +-- semantics-preserving v2 migration possible
+        |       -> v2 model
+        |
+        +-- semantics-preserving v2 migration not possible
+                -> Legacy model
+```
+
+Legacy modelへの取り込みはv1からv2へのMigrationではありません。v1の意味をv1のまま保持して
+利用するためのImportです。Legacyとして取り込まれた設定は、明示的なv2移行操作が行われるまで
+Legacy semanticsを維持します。
+
+共通Migration test assetsでは結果を次の3種類で記録します。
+
+| 結果 | 意味 |
+| --- | --- |
+| `v2-migration` | validなv1をruntime semanticsを保持したV2 modelとして取り込む |
+| `legacy-import` | validなv1をLegacy modelとして取り込み、v1 runtime semanticsと設定内容を保持する |
+| `import-error` | v1としてinvalidな入力を拒否する |
+
+`legacy-import`はImport成功であり、Error Registryのエラーとして扱いません。
+
+Migration成功またはLegacy Import成功だけを理由に永続設定を自動的に書き換えず、永続化は
+通常の明示的な保存操作に従います。製品内部の永続形式は製品固有ですが、M5ChainOSCでは
+Legacy設定をD1/D2系、v2設定をD3として扱います。
 
 #### v1 Amountからv2 Amount
 
@@ -323,7 +352,8 @@ Importerは入力をまずDevice Preset v1としてParse・Validationし、成�
 span = absoluteInputMax - absoluteInputMin
 ```
 
-`span`が`1..65535`の整数の場合に限り、次のように変換します。
+`span`が`1..65535`の整数であり、かつ変換後の設定がv2 Amount Validationを満たし、
+v1のruntime semanticsをv2で保持できる場合に限りv2へMigrationします。変換候補は次のとおりです。
 
 ```text
 rotationMode = "amount"
@@ -336,17 +366,22 @@ outputType = v1 range.type
 logicalPosition = 0
 ```
 
-`absoluteInputMin`の開始オフセットは保持しません。非整数、0以下または65535を超える
-`span`を丸めたり補正したりせず、`E_PRESET_DEVICE_SETTING_INVALID`で拒否します。
-変換後の`outputMin`、`outputMax`および`outputType`もv2の回転量Validationを満たす必要が
-あります。
+`absoluteInputMin`の開始オフセットはv2モデルには保持しません。非整数、0以下または65535を超える
+`span`を丸めたり補正したりしてMigrationしてはなりません。また、変換後の`outputMin`、
+`outputMax`および`outputType`がv2 Amount Validationを満たさない場合もMigrationしません。
 
 v1 Wrap ONの半開区間`[absoluteInputMin, absoluteInputMax)`と、v2 Wrap ONの両端を含む
-`0..rangeSteps`には端点動作の意味論差があります。
+`0..rangeSteps`には端点動作の意味論差があります。このように変換によってruntime semanticsが
+変化する有効なv1設定は、v2へMigrationせずLegacyとして取り込みます。
+
+したがって、v1として有効だがv2へ意味を保持してMigrationできないこと自体を
+`E_PRESET_DEVICE_SETTING_INVALID`の理由としてはなりません。`E_PRESET_DEVICE_SETTING_INVALID`は、
+入力そのものがv1として不正な場合など、Error Registryに従うImport Errorに使用します。
 
 #### v1 Incrementからv2 Direction
 
-`sendIncrement = true`では、v1の1 Encoder Step相当値を次のように変換します。
+`sendIncrement = true`では、v1のruntime semanticsをv2 Directionで保持できる場合に限り
+v2へMigrationします。1 Encoder Step相当の変換候補は次のとおりです。
 
 ```text
 rotationMode = "direction"
@@ -360,12 +395,13 @@ outputType = v1 range.type
 - String: v1と同じ固定小数点・小数点以下3桁のJSON String。負のゼロは`0.000`へ正規化
 
 v1が`delta * incrementScale`を使用する場合の`|delta| >= 2`の出力は、固定値を1回送る
-v2 Directionでは再現しません。このMigrationはv1の1 Step相当値を移すもので、完全な
-runtime動作互換ではありません。
+v2 Directionでは再現できません。このようなruntime semanticsの差が生じる設定は、
+1 Step相当値だけを近似的に移してv2 Migration成功とはせず、Legacyとして取り込みます。
 
 #### v1 Encoder Push
 
-押し込み操作の意味は変更せず、フィールド名を次のように変換します。
+回転設定をv2へMigrationする場合、押し込み操作の意味は変更せず、フィールド名を次のように
+変換します。
 
 ```text
 v1 clickMode -> v2 pushMode
@@ -373,6 +409,21 @@ v1 press     -> v2 press
 v1 release   -> v2 release
 v1 sequence  -> v2 sequence
 ```
+
+Legacyとして取り込む場合は、`clickMode`を含むv1 Push semanticsをLegacy modelとして保持します。
+
+#### Legacy Importと明示的なv2移行
+
+Legacyとして取り込まれた設定は、その後の通常編集・通常保存だけでは暗黙にv2へ昇格しません。
+製品がv2移行UIを提供する場合は、`v2設定へ移行する`等の明示的な操作として扱います。
+
+明示的な移行時にも、丸め、clamp、端点意味の変更、既定値への置換などによって自動的に
+semantic mismatchを隠してはなりません。losslessなMigration候補を構築できない場合は、
+ユーザーが有効なv2設定を明示的に選択する必要があります。
+
+Legacy設定をDevice Preset v2としてExportしてはなりません。v2 Exportを行うには、先に
+明示的なv2移行を完了してv2 modelにする必要があります。Legacy形式のExportを製品が提供する
+場合はDevice Preset v1として扱います。
 
 正式公開されていない開発途中のv2フィールド、旧draftまたは内部保存形式はMigration対象に
 含めません。
