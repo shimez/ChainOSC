@@ -4,7 +4,7 @@
   "presetSchemaVersion": 2,
   "fixtures": {
     "invalid/encoder-amount-range-zero.json": "E_PRESET_DEVICE_SETTING_INVALID",
-    "invalid/encoder-amount-range-fractional.json": "E_PRESET_DEVICE_SETTING_INVALID",
+    "invalid/encoder-amount-range-fractional.json": "E_PRESET_FIELD_TYPE_INVALID",
     "invalid/encoder-amount-range-too-large.json": "E_PRESET_DEVICE_SETTING_INVALID",
     "invalid/encoder-amount-wrap-type-invalid.json": "E_PRESET_FIELD_TYPE_INVALID",
     "invalid/encoder-amount-increase-direction-missing.json": "E_PRESET_REQUIRED_FIELD_MISSING",

@@ -143,8 +143,10 @@ Encoder Stepは、ハードウェア固有の入力処理が生成する論理�
 製品固有であり、Device Presetには含めません。
 
 `rangeSteps`は`outputMin`から`outputMax`まで移動するために必要なEncoder Step数です。
-JSON Integerで、ポータブル仕様上の有効範囲は`1..65535`です。0、負数、非整数または
-65535を超える値は`E_PRESET_DEVICE_SETTING_INVALID`で拒否します。
+JSON Integerでなければならず、fractional JSON Numberを含む型違反は
+`E_PRESET_FIELD_TYPE_INVALID`で拒否します。JSON Integerとして有効な型であっても、
+ポータブル仕様上の有効範囲`1..65535`を外れる0、負数または65535を超える値は
+`E_PRESET_DEVICE_SETTING_INVALID`で拒否します。
 
 論理位置`logicalPosition`は、両端を含む`0..rangeSteps`の`rangeSteps + 1`段階です。
 出力はfloat32演算として次の式で求めます。

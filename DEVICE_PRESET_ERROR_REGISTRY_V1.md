@@ -50,6 +50,7 @@
 
 - 必須のObject、Array、Fieldがない場合は`E_PRESET_REQUIRED_FIELD_MISSING`です。
 - Fieldは存在するがJSON型が仕様と異なる場合は`E_PRESET_FIELD_TYPE_INVALID`です。
+- JSON SchemaでIntegerを要求するFieldへfractional JSON Numberが指定された場合も`E_PRESET_FIELD_TYPE_INVALID`です。JSON型を検証してから、値域やデバイス固有の意味を検証します。
 - Sequenceの必須項目がない場合は、より具体的な`E_SEQUENCE_REQUIRED_FIELD_MISSING`を優先します。
 - OSC、Sequence、デバイス固有値に専用Error Codeがある場合は、その専用Error Codeを優先します。
 
@@ -198,7 +199,7 @@ Context: Key / Press / Message 2 / address
 
 #### E_PRESET_FIELD_TYPE_INVALID
 
-- Condition: Fieldは存在しますが、JSON型がDevice Preset v1と一致しません。
+- Condition: Fieldは存在しますが、JSON型が対象Device Preset Schemaと一致しません。Integerを要求するFieldへfractional JSON Numberが指定された場合を含みます。
 - Import result: Reject
 - HTTP status: `400`（HTTP経由の場合）
 - Japanese: プリセット項目の型が正しくありません。Device Preset v1で定義されたJSON型を使用してください。
@@ -324,7 +325,7 @@ Context: Key / Press / Message 2 / address
 
 #### E_PRESET_DEVICE_SETTING_INVALID
 
-- Condition: Encoder、Angle、ToF、Joystickなどのデバイス固有値が、Device Preset v1で許可された型または範囲を満たしません。
+- Condition: JSON型の検証を通過したEncoder、Angle、ToF、Joystickなどのデバイス固有値が、対象Device Preset仕様で許可された値域または意味上の条件を満たしません。
 - Import result: Reject
 - HTTP status: `400`（HTTP経由の場合）
 - Japanese: デバイス設定値が正しくありません。対象デバイスで使用できる値の範囲と型を確認してください。
