@@ -417,18 +417,134 @@ Legacyとして取り込む場合は、`clickMode`を含むv1 Push semanticsをL
 #### Legacy Importと明示的なv2移行
 
 Legacyとして取り込まれた設定は、その後の通常編集・通常保存だけでは暗黙にv2へ昇格しません。
-製品がv2移行UIを提供する場合は、`v2設定へ移行する`等の明示的な操作として扱います。
+製品がv2移行UIを提供する場合は、`v2設定へ移行する`等の明示的なユーザー操作として扱います。
+ページ表示、Legacyフィールドの編集、通常保存、Import、Export、reload、rebootまたは再接続を
+契機として移行を開始してはなりません。
 
-明示的な移行時にも、丸め、clamp、端点意味の変更、既定値への置換などによって自動的に
-semantic mismatchを隠してはなりません。losslessなMigration候補を構築できない場合は、
-ユーザーが有効なv2設定を明示的に選択する必要があります。
+この明示的な移行は、Device Preset v1 Import時のMigration分類とは別の処理です。Import時には
+引き続き、runtime semanticsを保持できるvalidなv1だけを`v2-migration`とし、それ以外のvalidな
+v1を`legacy-import`として扱います。後から明示的な移行が可能であることを理由に、Import時の
+`legacy-import`を`v2-migration`へ再分類してはなりません。
 
-Legacy設定をDevice Preset v2としてExportしてはなりません。v2 Exportを行うには、先に
-明示的なv2移行を完了してv2 modelにする必要があります。Legacy形式のExportを製品が提供する
-場合はDevice Preset v1として扱います。
+##### 編集可能なV2 Migration candidate
+
+ユーザーが明示的に移行を要求した場合、製品は編集可能なV2 Migration candidateを生成できます。
+candidateは提案されたV2設定であり、永続設定でもMigration成功結果でもありません。
+
+candidateの生成では、意味を正確に移せる値を保持し、必要に応じて決定的な候補値を提示できます。
+ただし、runtime semanticsを一意に保持できないフィールドまたは挙動はユーザーによる確認または
+再定義が必要であることを示さなければなりません。non-losslessなcandidateを、元のLegacy設定と
+動作上同一であるかのように扱ってはなりません。
+
+candidateの生成、表示または編集だけを理由に、次の状態を変更してはなりません。
+
+- 永続化されたLegacy設定
+- 永続model discriminator
+- 現在有効なLegacy runtime設定
+- 永続ストレージ
+- Migration要求前から存在するruntime state
+
+candidateは永続modelとして保存せず、原則としてvolatileな状態として扱います。validなV2
+candidateが明示的に保存され、その保存と製品既定のreadback確認が成功するまで、永続modelは
+Legacyのままです。
+
+##### Save、Cancelおよび失敗時の状態遷移
+
+明示的な移行の状態遷移は次のとおりです。
+
+```text
+LEGACY_PERSISTED
+  |
+  | explicit migration action
+  v
+V2_CANDIDATE
+  |
+  +-- Cancel
+  |     -> LEGACY_PERSISTED
+  |
+  +-- ValidationまたはSave失敗
+  |     -> LEGACY_PERSISTED
+  |     -> candidateは修正のため表示を維持してよい
+  |
+  +-- 明示的なSave成功
+        -> V2_PERSISTED
+```
+
+Cancel、Validation失敗、ストレージ書き込み失敗またはreadback失敗によってLegacy modelをV2へ
+昇格させてはなりません。Migrationは、validなV2 candidateの明示的なSaveが成功したときだけ
+完了します。失敗時は製品既定のtransactional persistence保証に従います。
+
+##### Non-losslessな明示的移行
+
+runtime semanticsを保持した自動変換ができないLegacy設定も、明示的な移行フローへ入ることが
+できます。製品は、変換不能であることだけを理由に移行操作そのものを拒否する代わりに、編集可能な
+V2 candidateを提示できます。ただし、意味が変化する箇所をユーザーが理解し、Save前に確認または
+再定義できる情報を提供しなければなりません。
+
+代表的なsemantic mismatchには次が含まれます。
+
+- Legacy Amount WrapとV2の両端を含むWrapの端点動作
+- V2に直接対応しない`absoluteInputMin` / `absoluteInputMax`の入力オフセット
+- 整数`rangeSteps`へ正確に移せないfractional span
+- `delta * incrementScale`へ依存するLegacy Incrementと、固定方向値を送るV2 Direction
+- 丸めまたはclampにより出力結果が変化する設定
+
+明示的な移行でも、丸め、clamp、端点意味の変更、既定値への置換などによってsemantic mismatchを
+隠してはなりません。candidateの値は次の区分で扱います。
+
+1. 意味を正確に移せる値は自動的にコピーしてよい。
+2. 決定的で有用な候補値を導出できる場合は、losslessでないことを明示したうえで提示してよい。
+3. 意味が一意に決まらない値は、ユーザーによる確認または再定義を求める。
+4. validなV2設定の構築に情報が不足する場合は、Save前に必要な値の入力を求める。
+
+OSC Address、互換性のあるOutput Type、Encoder Push、Press / ReleaseおよびSequenceなどは、
+意味が変わらない範囲で正確に移せる値の候補です。これらの例は、すべてのLegacy設定に対して
+無条件に正確な移行を保証するものではありません。
+
+##### Migration UIとnavigation
+
+Migration UIは通常のV2 editorを再利用できますが、永続化されたLegacy設定と未保存のV2
+candidateを明確に区別し、意味が変わるフィールドには確認または編集が必要であることを示します。
+元のLegacy設定はSave成功まで変更されないことをユーザーへ示すべきです。専用の複数step wizardは
+必須ではありません。
+
+Migration開始要求は、ページのrefreshや直接navigationによって意図せず再実行されてはなりません。
+query parameterをMigration開始のcommandとして使用する場合は、安全なredirectまたは状態遷移に
+よって処理後に消費します。Save成功後またはCancel後にはMigration専用のnavigation stateを消去し、
+rebootによって未保存candidateをV2へ昇格させてはなりません。
+
+##### 明示的移行中のExport
+
+未保存のMigration candidateは、永続化されたDevice Preset modelではありません。通常Exportは
+常に永続modelを対象とします。
+
+```text
+persisted Legacy -> Device Preset v1
+persisted V2     -> Device Preset v2
+```
+
+candidateのpreviewまたはExportは別機能であり、本仕様では定義しません。
+
+##### 明示的移行のConformance要件
+
+明示的なLegacy-to-V2 Migrationに対応する製品は、少なくとも次を確認します。
+
+1. Legacy設定の通常保存がLegacy modelを維持する。
+2. 明示的なユーザー操作によってのみMigrationが開始する。
+3. candidate生成だけではV2を永続化しない。
+4. Cancel後もLegacy設定が変更されない。
+5. invalidなcandidateのSaveではV2へ昇格しない。
+6. validなcandidateの明示的なSave成功によってV2を永続化する。
+7. non-losslessなcaseをlosslessとして表示しない。
+8. 既存のV2編集および保存動作へ影響しない。
+
+既存のv1 Migration fixturesはImport時の分類を検証する資産であり、明示的な移行が後から可能で
+あることを理由に再分類しません。特に既存の`legacy-import` caseは、Device Preset v1 Import時には
+引き続き`legacy-import`です。
 
 正式公開されていない開発途中のv2フィールド、旧draftまたは内部保存形式はMigration対象に
-含めません。
+含めません。この方針の導入だけを理由に、一時的なv2 alias、fallback fieldまたはv2-to-v2
+Migration layerを追加してはなりません。
 
 ## ValidationとImport原則
 
