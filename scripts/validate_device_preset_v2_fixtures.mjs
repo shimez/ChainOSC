@@ -34,6 +34,13 @@ const fixtureRoot = resolve(repositoryRoot, "test-data", "device-presets-v2");
 const expectedErrorsPath = resolve(fixtureRoot, "expected-errors.json");
 const migrationRoot = resolve(fixtureRoot, "migration");
 const migrationCasesPath = resolve(migrationRoot, "cases.json");
+const keyRuntimeVectorsPath = resolve(
+  repositoryRoot,
+  "test-data",
+  "device-presets",
+  "key-runtime-vectors.json",
+);
+const v1FixtureRoot = resolve(repositoryRoot, "test-data", "device-presets");
 
 async function readJson(path) {
   const source = await readFile(path, "utf8");
@@ -98,6 +105,55 @@ function deriveSemanticsPreservingV2Amount(input) {
       sequence: encoder.sequence,
     },
   };
+}
+
+function normalizeRuntimeValue(value) {
+  if (typeof value === "number") return Math.round(value * 1e9) / 1e9;
+  if (Array.isArray(value)) return value.map(normalizeRuntimeValue);
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, item]) => [key, normalizeRuntimeValue(item)]),
+    );
+  }
+  return value;
+}
+
+function runKeyRuntimeCase(testCase) {
+  if (testCase.kind === "pressRelease") {
+    const sends = [];
+    for (const event of testCase.events) {
+      sends.push(...(event === "press" ? testCase.press : testCase.release));
+    }
+    return sends;
+  }
+  if (testCase.kind === "invalidImport") {
+    return testCase.events.map(() => ({
+      send: false,
+      settings: testCase.initialState.settings,
+      position: testCase.initialState.position,
+    }));
+  }
+  let position = testCase.initialPosition ?? testCase.start;
+  return testCase.events.map((event) => {
+    if (event.operation === "coldStart") {
+      position = testCase.start;
+      return { send: false, nextPosition: position };
+    }
+    if (event.operation !== "press")
+      throw new Error(`${testCase.id}: unsupported operation ${event.operation}`);
+    if (event.sendResult === "detected-failure")
+      return { send: false, nextPosition: position };
+    const value = position;
+    const next = position + testCase.step;
+    if ((testCase.step > 0 && next > testCase.end) ||
+        (testCase.step < 0 && next < testCase.end) ||
+        testCase.start === testCase.end) {
+      position = testCase.start;
+    } else {
+      position = next;
+    }
+    return { send: true, value, nextPosition: position };
+  });
 }
 
 async function main() {
@@ -168,14 +224,33 @@ async function main() {
   });
   const validate = ajv.compile(schema);
   const validateV1 = ajv.compile(v1Schema);
+  let failures = 0;
+
+  const v1KeyFiles = [
+    resolve(v1FixtureRoot, "canonical", "key.json"),
+    ...(await listJsonFiles(resolve(v1FixtureRoot, "valid"))).filter((path) =>
+      /^key-/.test(relative(resolve(v1FixtureRoot, "valid"), path)),
+    ),
+  ];
+  let v1KeyValid = 0;
+  for (const path of v1KeyFiles) {
+    const fixture = await readJson(path);
+    const name = relative(v1FixtureRoot, path).replaceAll("\\", "/");
+    if (!validateV1(fixture) || fixture.deviceType !== 3) {
+      failures += 1;
+      console.error(`FAIL v1 Key: ${name}`);
+      console.error(formatAjvErrors(validateV1.errors));
+    } else {
+      v1KeyValid += 1;
+      console.log(`PASS v1 Key: ${name}`);
+    }
+  }
 
   const validFiles = [
     ...(await listJsonFiles(resolve(fixtureRoot, "canonical"))),
     ...(await listJsonFiles(resolve(fixtureRoot, "valid"))),
   ];
   const invalidFiles = await listJsonFiles(resolve(fixtureRoot, "invalid"));
-
-  let failures = 0;
 
   for (const path of validFiles) {
     const name = fixtureName(path);
@@ -327,9 +402,38 @@ async function main() {
     }
   }
 
+  const keyRuntimeVectors = await readJson(keyRuntimeVectorsPath);
+  if (!Array.isArray(keyRuntimeVectors.cases)) {
+    failures += 1;
+    console.error("FAIL Key runtime: cases must be an array");
+  } else {
+    const ids = new Set();
+    for (const testCase of keyRuntimeVectors.cases) {
+      if (typeof testCase.id !== "string" || ids.has(testCase.id)) {
+        failures += 1;
+        console.error(`FAIL Key runtime: invalid or duplicate id ${testCase.id}`);
+        continue;
+      }
+      ids.add(testCase.id);
+      const actual = runKeyRuntimeCase(testCase);
+      const expected = testCase.kind === "pressRelease"
+        ? testCase.expectedSends
+        : testCase.expected;
+      if (!isDeepStrictEqual(
+        normalizeRuntimeValue(actual),
+        normalizeRuntimeValue(expected),
+      )) {
+        failures += 1;
+        console.error(`FAIL Key runtime: ${testCase.id}`);
+      } else {
+        console.log(`PASS Key runtime: ${testCase.id}`);
+      }
+    }
+  }
+
   console.log("");
   console.log(
-    `Summary: valid=${validFiles.length} invalid=${invalidFiles.length} migration=${migrationManifest.cases.length} failures=${failures}`,
+    `Summary: valid=${validFiles.length} invalid=${invalidFiles.length} migration=${migrationManifest.cases.length} v1KeyValid=${v1KeyValid} keyRuntime=${keyRuntimeVectors.cases?.length ?? 0} failures=${failures}`,
   );
 
   if (failures > 0) {

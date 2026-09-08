@@ -2,9 +2,8 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/shimez/ChainOSC/main/schemas/chainosc-device-preset-v2.schema.json",
   "title": "ChainOSC Device Preset JSON Format v2",
-  "description": "Canonical Device Preset v2 output for Key and Encoder. Sensor device v2 formats are intentionally not yet defined.",
+  "description": "Canonical Device Preset v2 output for Encoder. Key remains on the maintained Device Preset v1 format; sensor device v2 formats are intentionally not yet defined.",
   "oneOf": [
-    { "$ref": "#/$defs/keyPreset" },
     { "$ref": "#/$defs/encoderAmountPreset" },
     { "$ref": "#/$defs/encoderDirectionFloatPreset" },
     { "$ref": "#/$defs/encoderDirectionIntPreset" },
@@ -59,29 +58,6 @@
             { "$ref": "#/$defs/finiteFloat32" },
             { "not": { "const": 0 } }
           ]
-        }
-      }
-    },
-    "keyPreset": {
-      "type": "object",
-      "required": ["format", "schemaVersion", "deviceType", "deviceTypeName", "key"],
-      "additionalProperties": false,
-      "properties": {
-        "format": { "const": "ChainOSC-device-preset" },
-        "schemaVersion": { "const": 2 },
-        "deviceType": { "const": 3 },
-        "deviceTypeName": { "const": "Key" },
-        "key": {
-          "type": "object",
-          "required": ["mode", "press", "release", "sequence"],
-          "additionalProperties": false,
-          "x-chainosc-pressReleaseMaxItems": 8,
-          "properties": {
-            "mode": { "type": "integer", "enum": [0, 1] },
-            "press": { "$ref": "#/$defs/messageArray" },
-            "release": { "$ref": "#/$defs/messageArray" },
-            "sequence": { "$ref": "#/$defs/sequence" }
-          }
         }
       }
     },

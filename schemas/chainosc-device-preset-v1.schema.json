@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/shimez/ChainOSC/main/schemas/chainosc-device-preset-v1.schema.json",
   "title": "ChainOSC Device Preset JSON Format v1",
-  "description": "Canonical output produced by current ChainOSC device preset exporters. Importers may accept additional legacy input.",
+  "description": "Canonical Device Preset v1 output. This is the maintained, non-deprecated canonical format for Key. Importers may accept additional legacy input for other device types.",
   "oneOf": [
     { "$ref": "#/$defs/keyPreset" },
     { "$ref": "#/$defs/encoderPreset" },

@@ -1,0 +1,86 @@
+{
+  "format": "ChainOSC-key-v1-runtime-vectors",
+  "version": 1,
+  "cases": [
+    {
+      "id": "KEY-PRESS-RELEASE-ORDER",
+      "kind": "pressRelease",
+      "press": ["first", "duplicate", "duplicate", "last"],
+      "release": ["release-first", "release-last"],
+      "events": ["press", "release"],
+      "expectedSends": ["first", "duplicate", "duplicate", "last", "release-first", "release-last"]
+    },
+    {
+      "id": "KEY-SEQUENCE-START-FIRST",
+      "kind": "sequence",
+      "start": 5,
+      "end": 7,
+      "step": 1,
+      "events": [{"operation":"press"}],
+      "expected": [{"send":true,"value":5,"nextPosition":6}]
+    },
+    {
+      "id": "KEY-SEQUENCE-ASCENDING-END-INCLUSIVE",
+      "kind": "sequence",
+      "start": 0,
+      "end": 3,
+      "step": 1,
+      "events": [{"operation":"press"},{"operation":"press"},{"operation":"press"},{"operation":"press"},{"operation":"press"}],
+      "expected": [{"send":true,"value":0,"nextPosition":1},{"send":true,"value":1,"nextPosition":2},{"send":true,"value":2,"nextPosition":3},{"send":true,"value":3,"nextPosition":0},{"send":true,"value":0,"nextPosition":1}]
+    },
+    {
+      "id": "KEY-SEQUENCE-DESCENDING-END-INCLUSIVE",
+      "kind": "sequence",
+      "start": 3,
+      "end": 0,
+      "step": -1,
+      "events": [{"operation":"press"},{"operation":"press"},{"operation":"press"},{"operation":"press"},{"operation":"press"}],
+      "expected": [{"send":true,"value":3,"nextPosition":2},{"send":true,"value":2,"nextPosition":1},{"send":true,"value":1,"nextPosition":0},{"send":true,"value":0,"nextPosition":3},{"send":true,"value":3,"nextPosition":2}]
+    },
+    {
+      "id": "KEY-SEQUENCE-UNREACHABLE-END-NO-SNAP",
+      "kind": "sequence",
+      "start": 0,
+      "end": 1,
+      "step": 0.3,
+      "events": [{"operation":"press"},{"operation":"press"},{"operation":"press"},{"operation":"press"},{"operation":"press"}],
+      "expected": [{"send":true,"value":0,"nextPosition":0.3},{"send":true,"value":0.3,"nextPosition":0.6},{"send":true,"value":0.6,"nextPosition":0.9},{"send":true,"value":0.9,"nextPosition":0},{"send":true,"value":0,"nextPosition":0.3}]
+    },
+    {
+      "id": "KEY-SEQUENCE-START-EQUALS-END",
+      "kind": "sequence",
+      "start": 2,
+      "end": 2,
+      "step": 1,
+      "events": [{"operation":"press"},{"operation":"press"},{"operation":"press"}],
+      "expected": [{"send":true,"value":2,"nextPosition":2},{"send":true,"value":2,"nextPosition":2},{"send":true,"value":2,"nextPosition":2}]
+    },
+    {
+      "id": "KEY-SEQUENCE-COLD-START",
+      "kind": "sequence",
+      "start": -2,
+      "end": 2,
+      "step": 1,
+      "initialPosition": 1,
+      "events": [{"operation":"coldStart"},{"operation":"press"}],
+      "expected": [{"send":false,"nextPosition":-2},{"send":true,"value":-2,"nextPosition":-1}]
+    },
+    {
+      "id": "KEY-INVALID-IMPORT-PRESERVES-STATE",
+      "kind": "invalidImport",
+      "initialState": {"settings":"before","position":2},
+      "events": [{"operation":"rejectInvalidImport"}],
+      "expected": [{"send":false,"settings":"before","position":2}]
+    },
+    {
+      "id": "KEY-SEQUENCE-DETECTED-FAILURE-HOLDS-POSITION",
+      "kind": "sequence",
+      "start": 0,
+      "end": 2,
+      "step": 1,
+      "events": [{"operation":"press","sendResult":"detected-failure"},{"operation":"press","sendResult":"success"}],
+      "expected": [{"send":false,"nextPosition":0},{"send":true,"value":0,"nextPosition":1}],
+      "qualification": "Applies only when the product can detect the OSC send failure."
+    }
+  ]
+}

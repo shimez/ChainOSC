@@ -1,7 +1,7 @@
 # ChainOSC Device Preset JSON Format v2
 
 この文書は、`ChainOSC-device-preset`、`schemaVersion: 2`の正規出力仕様を定義します。
-現段階のv2はKeyとEncoderを対象とします。Angle、ToF、Joystickのv2仕様は未確定であり、
+現段階のv2はEncoderを対象とします。Keyのmaintained canonical formatはDevice Preset v1です。Angle、ToF、Joystickのv2仕様は未確定であり、
 本書およびv2 Schemaへ先行して追加しません。
 
 ## 位置づけ
@@ -25,7 +25,6 @@
 | デバイス | `deviceType` | `deviceTypeName` | 設定項目 |
 | --- | ---: | --- | --- |
 | Encoder | 1 | `Encoder` | `encoder` |
-| Key | 3 | `Key` | `key` |
 
 正規出力には、対応する設定項目以外のルート項目を追加しません。
 
@@ -44,25 +43,6 @@ v1と同じ意味を維持します。
 - OSC Messageの`value`はUTF-8で128 bytes以下とします。
 - `press`と`release`の合計は8件以下とします。
 - Sequenceの`step`は0ではなく、StartからEndへ進む方向でなければなりません。
-
-## Key
-
-KeyのPress / Release / Sequenceの意味はv1から変更しません。
-
-```json
-{
-  "format": "ChainOSC-device-preset",
-  "schemaVersion": 2,
-  "deviceType": 3,
-  "deviceTypeName": "Key",
-  "key": {
-    "mode": 0,
-    "press": [{"address":"/example/key","value":"1","type":1}],
-    "release": [{"address":"/example/key","value":"0","type":1}],
-    "sequence": {"address":"/example/key/sequence","type":1,"start":0,"end":3,"step":1}
-  }
-}
-```
 
 ## Encoder
 
@@ -299,14 +279,14 @@ Chain Encoderのraw absolute counterは、`logicalPosition`ではなく`delta`�
 
 ### Encoder Push / エンコーダープッシュ
 
-Encoder Pushは回転モードと独立し、Keyと同じPress / ReleaseおよびSequenceモデルを
+Encoder Pushは回転モードと独立し、Device Preset v1 Keyと同じPress / ReleaseおよびSequenceモデルを
 使用します。
 
 - `pushMode = 0`: `press`と`release`を使用
 - `pushMode = 1`: `sequence`を使用
 
 `press`、`release`および`sequence`は、選択中の`pushMode`にかかわらず正規出力へ含め、
-Keyと同じ型、件数、値域およびSequence方向のValidationを適用します。
+Device Preset v1 Keyと同じ型、件数、値域およびSequence方向のValidationを適用します。
 
 Device Preset v2で押し込み操作を表す正式フィールド名は`pushMode`です。`clickMode`は
 Device Preset v2のフィールドではなく、v2 Importerは受理しません。
@@ -565,7 +545,7 @@ Validationを完了してはなりません。
 | `x-chainosc-maxUtf8Bytes` | JSON StringをUTF-8へ符号化したbyte数が指定上限以下であることをImporterが検証する |
 | `x-chainosc-finiteFloat32` | JSON Numberが有限なfloat32へ変換でき、変換結果がNaNまたはInfinityにならないことをImporterが検証する |
 | `x-chainosc-valueMustMatchType` | OSC MessageのString `value`が`type`に応じて有効なfloat32、int32またはStringであることをImporterが検証する |
-| `x-chainosc-pressReleaseMaxItems` | 同じKeyまたはEncoder Push内の`press.length + release.length`が8以下であることをImporterが検証する |
+| `x-chainosc-pressReleaseMaxItems` | Encoder Push内の`press.length + release.length`が8以下であることをImporterが検証する |
 | `x-chainosc-stepMustMoveTowardEnd` | Sequenceの`step`が0ではなく、`start`から`end`へ進む方向であることをImporterが検証する |
 | `x-chainosc-amountOutputValid` | `outputMin < outputMax`、float32マッピングの有限性、およびInt出力を丸めた結果がint32範囲内であることをImporterが検証する |
 | `x-chainosc-amountStringFormat` | Amount String出力を小数点以下3桁で生成し、`-0.000`を`0.000`へ正規化するruntime／Exporterの規範を示す |

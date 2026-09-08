@@ -4,6 +4,8 @@
 
 ## 位置づけ
 
+- Keyのmaintained canonical formatはDevice Preset v1です。Key v1は現行仕様であり、Legacyでもdeprecatedでもありません。Keyの新規正規Exportは`schemaVersion: 1`を使用します。
+- format versionはデバイス種類ごとのcontract evolutionを表します。すべてのデバイス種類が同時に同じ`schemaVersion`へ移行する必要はありません。現在、Device Preset v2の規範対象はEncoderです。
 - 本仕様は**現行Exporterが新規に出力するJSON**を定義します。
 - Importerは、公開済みバージョンとの互換性維持のため、本仕様より緩い入力や旧`M5ChainOSC-device-preset`を受け入れる場合があります。
 - Importerが受け入れることは、そのJSONがv1の正規出力であることを意味しません。
@@ -108,6 +110,46 @@ ToFの`range.type`はFloatまたはIntだけなので、0または1です。
 | `sequence` | Object | Sequence設定 |
 
 モードにかかわらず、Exporterは`press`、`release`、`sequence`をすべて出力します。
+
+### Press / Release
+
+- `mode = 0`はPress / Releaseモードです。
+- Press eventでは`press`配列を記載順に処理し、Release eventでは`release`配列を記載順に処理します。
+- 重複するOSC Messageは削除せず、配列に記載されたとおり処理します。
+- `press`と`release`は空配列を許容します。
+- 両配列の合計は8件以下でなければなりません。
+- 途中のOSC Message送信が失敗した後に後続メッセージを継続するか中止するかは、製品固有です。
+
+### Sequence runtime semantics
+
+`mode = 1`はSequenceモードです。Sequence positionの初期値は`start`です。Press eventでは現在のpositionを送信し、その送信処理後に`step`を加えた次のpositionを計算します。Release eventではSequence値を送信しません。
+
+到達可能な`end`は送信対象に含みます。
+
+```text
+start=0, end=3, step=1  -> 0, 1, 2, 3, 0, ...
+start=3, end=0, step=-1 -> 3, 2, 1, 0, 3, ...
+```
+
+次のpositionが`start`から`end`までの範囲を越える場合は、次のpositionを`start`へ戻します。`end`へ強制的にsnapせず、範囲を越えた値も送信しません。内部浮動小数点精度や比較に用いるepsilonは製品実装の詳細です。
+
+```text
+start=0, end=1, step=0.3 -> 0.0, 0.3, 0.6, 0.9, 0.0, ...
+```
+
+`start == end`は、`step != 0`であれば有効です。この場合はStep方向検証を適用せず、Pressのたびに`start`を送信します。
+
+Sequence positionはruntime-onlyのvolatile stateです。Device Presetのフィールドではなく、正規Exportおよび永続設定へ含めません。cold bootまたはアプリケーション起動後の最初のpositionは`start`です。WebUI Save、成功したImport、browser reload、device reconnect等でのreset timingは製品固有です。
+
+製品がOSC送信失敗を検出でき、当該Sequence送信処理が失敗として終了した場合、Sequence positionを進めません。これは受信側への到達保証、ACK、再送またはtransport retryを要求するものではありません。
+
+### Output conversion boundaries
+
+Sequenceの`type`は送信するOSC wire typeを指定します。FloatはOSC float32、IntはOSC int32、StringはOSC Stringとして送信します。一方、SequenceのNumberからIntへの丸め方法、およびStringへの数値整形方法は製品固有です。本仕様はhalf-away-from-zero、zero方向への切り捨て、固定小数桁、末尾の0、負のゼロ、scientific notationまたは内部演算精度を共通要件として定めません。
+
+### Invalid Import atomicity
+
+不正なDevice Preset v1 Keyは拒否し、保存済み設定、現在有効な設定およびSequence positionを変更してはなりません。不正なv1を既定値、補正または別形式へのfallbackによって適用してはなりません。
 
 ## Encoder
 

@@ -13,14 +13,15 @@ Exporterを変更した場合は、出力が対応するcanonical fixtureと同�
 
 ## Device Preset v2開発データ
 
-`device-presets-v2/`には、開発中のKey／Encoder v2仕様に対するSchema fixture、
-v1 Migration例、Encoder共通ランタイムテストベクトルがあります。
+`device-presets-v2/`には、Encoder v2仕様に対するSchema fixture、v1 Migration例、
+Encoder共通ランタイムテストベクトルがあります。Keyのmaintained canonical fixtureと
+runtime vectorは`device-presets/`にあります。
 
 - 仕様: [`../DEVICE_PRESET_FORMAT_V2.md`](../DEVICE_PRESET_FORMAT_V2.md)
 - JSON Schema: [`../schemas/chainosc-device-preset-v2.schema.json`](../schemas/chainosc-device-preset-v2.schema.json)
 - テストデータ: [`device-presets-v2/README.md`](device-presets-v2/README.md)
 
-各製品のv2実装が完了するまで、v2 fixtureを現行Exporterの回帰基準として扱いません。
+v2 fixtureはEncoder v2 Exporterの回帰基準です。Key Exporterの回帰基準にはv1 fixtureを使用します。
 
 ## 正常系プリセット
 
@@ -29,6 +30,9 @@ v1 Migration例、Encoder共通ランタイムテストベクトルがありま�
 | `device-presets/valid/key-press-release-types.json` | Int／Float／String、Press／Release、合計6件 | SERIES-KEY-01、SERIES-PRESET-KEY-01／02 |
 | `device-presets/valid/key-sequence-up-int.json` | 増加Sequence | SERIES-KEY-05 |
 | `device-presets/valid/key-sequence-down-float.json` | 減少Sequence | SERIES-KEY-06 |
+| `device-presets/valid/key-press-release-total-eight.json` | Press／Release合計8件の上限 | SERIES-JSON-02 |
+| `device-presets/valid/key-sequence-start-equals-end.json` | StartとEndが同値のSequence | SERIES-KEY-05／06 |
+| `device-presets/valid/key-sequence-unreachable-end.json` | Endへ到達しないSequence | SERIES-KEY-05 |
 | `device-presets/valid/key-int32-boundaries.json` | OSC int32の最小値／最大値 | SERIES-JSON-02 |
 | `device-presets/valid/key-float32-finite.json` | 有限なOSC float32境界付近 | SERIES-JSON-02 |
 | `device-presets/valid/encoder.json` | Encoder Absolute、クリック | SERIES-PRESET-ENC-01 |
@@ -70,3 +74,9 @@ v1 Migration例、Encoder共通ランタイムテストベクトルがありま�
 - M5ChainOSC: 実機からエクスポートした全体設定と、公開済み旧バージョンのバックアップを使用
 
 境界値や保存形式を変更した場合は、対象製品側の生成スクリプトとテストデータを更新してください。
+
+## Key v1 runtime vectors
+
+`device-presets/key-runtime-vectors.json`は、Key v1の製品非依存なhistorical contractを検証します。Press／Releaseの順序と重複保持、SequenceのStart-first、到達可能なEnd、到達不能なEnd、`start == end`、cold start、invalid Import atomicity、および検出可能な送信失敗時の位置保持を対象とします。
+
+Intの丸め、Stringの数値整形、WebUI Save／成功Import／browser reload／reconnect時のreset、内部epsilon、およびPress／Release途中失敗後の継続可否は製品差があるため、この共通vectorでは固定しません。

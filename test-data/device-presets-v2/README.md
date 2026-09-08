@@ -1,6 +1,7 @@
 # ChainOSC Device Preset v2テストデータ
 
-このディレクトリは、KeyおよびEncoderのDevice Preset v2共通テストデータです。
+このディレクトリは、EncoderのDevice Preset v2共通テストデータです。Keyのmaintained
+canonical formatはDevice Preset v1であり、Key fixtureは[`../device-presets/`](../device-presets/)にあります。
 
 - `canonical/`: v2 Exporterの正規出力例
 - `valid/`: 境界値や追加の正常系
@@ -14,4 +15,3 @@ Angle、ToF、Joystickのv2 fixtureは各仕様が確定するまで追加しま
 
 JSON Schemaによる構造検証に加え、UTF-8 byte数、Sequence、Float32、Migration、
 OSC出力文字列などの意味検証を製品Importerと共通テストで実施してください。
-

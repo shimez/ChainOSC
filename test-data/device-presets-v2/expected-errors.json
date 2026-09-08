@@ -22,9 +22,6 @@
     "invalid/encoder-amount-output-reversed.json": "E_PRESET_DEVICE_SETTING_INVALID",
     "invalid/encoder-amount-mapping-overflow.json": "E_PRESET_DEVICE_SETTING_INVALID",
     "invalid/encoder-amount-int-output-overflow.json": "E_PRESET_DEVICE_SETTING_INVALID",
-    "invalid/key-press-release-total-nine.json": "E_OSC_MESSAGE_COUNT_EXCEEDED",
-    "invalid/key-sequence-zero-step.json": "E_SEQUENCE_STEP_ZERO",
-    "invalid/key-sequence-wrong-direction.json": "E_SEQUENCE_DIRECTION_INVALID",
     "invalid/encoder-amount-int-output-underflow.json": "E_PRESET_DEVICE_SETTING_INVALID"
   }
 }

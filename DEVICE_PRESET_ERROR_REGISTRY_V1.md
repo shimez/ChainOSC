@@ -325,7 +325,7 @@ Context: Key / Press / Message 2 / address
 
 #### E_PRESET_DEVICE_SETTING_INVALID
 
-- Condition: JSON型の検証を通過したEncoder、Angle、ToF、Joystickなどのデバイス固有値が、対象Device Preset仕様で許可された値域または意味上の条件を満たしません。
+- Condition: JSON型の検証を通過したKey、Encoder、Angle、ToF、Joystickなどのデバイス固有値が、対象Device Preset仕様で許可された値域または意味上の条件を満たしません。
 - Import result: Reject
 - HTTP status: `400`（HTTP経由の場合）
 - Japanese: デバイス設定値が正しくありません。対象デバイスで使用できる値の範囲と型を確認してください。
