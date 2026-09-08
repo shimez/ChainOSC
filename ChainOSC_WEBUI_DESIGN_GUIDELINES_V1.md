@@ -1,6 +1,6 @@
 # ChainOSC WebUI Design Guidelines v1
 
-Status: Draft for independent review  
+Status: Draft — Encoder Fixed  
 Language: Japanese  
 Initial Reference Implementation: ChainOSCPad Encoder WebUI
 
@@ -315,22 +315,22 @@ Guidelines revision FROZEN
 
 Device固有の具体的なvisual ruleをCommonへ昇格するのは、原則として複数の受け入れ済み実装などから共有Design Languageである根拠が得られた場合とする。単一Deviceの具体的なlayout、spacing、color、field arrangement等の採用だけを理由にCommon化してはならない。
 
-本DraftはIndependent Review前であり、FROZENではない。
+Encoder固有UIはIndependent ReviewおよびChainOSCPadでのreal-device / browser evaluationを完了し、Fixed Reference UIとして確定している。本Guidelines v1全体は、UNSPECIFIEDなDevice UIを今後追加・評価するため、Draftとして継続する。
 
 ## 10. Reference Implementation
 
 - Product: ChainOSCPad
 - Area: Encoder WebUI
 - Repository: `shimez/ChainOSCPad`
-- Branch inspected: `main`
-- HEAD inspected: `281f7b3e9fe4c84cd4f5dee30895f2b914c1011c`
+- Branch: `main`
+- Reference Implementation commit: `772c7c93c045ab2ced06ad804005acd2d08631ab`
+- Physical E2E verification commit: `84db40c03fa77cd4cce5a78ce29d27de49af3d1b`
 - Relevant source: `src/network_manager.cpp`
-- Inspection date: 2026-09-08
-- Working-tree state: `src/network_manager.cpp`に、P6 Legacy WebUI／explicit Migration実装および人間がFIXした外観調整の未コミット差分を含む状態
+- Verification date: 2026-09-08
 
-このReferenceは、HEAD commit単体ではなく、上記HEADに現在の未コミットworking-tree diffを加えたaccepted UIを指す。存在しないcommit SHAをFixed実装として扱ってはならない。
+Reference Implementation commitは、Fixed Encoder WebUI、P6 Legacy WebUI／explicit Migration実装、およびPhysical E2E中に受け入れられたwording refinementを含む確定済み実装を指す。
 
-Guidelines v1をFROZENとする際には、Fixed Encoder WebUIを含む最終commitをReference Implementationとして記録し、このworking-tree参照を確定済みcommit SHAへ更新する。
+Physical E2E verification commitは、上記Reference Implementationに対して実施したreal-device / browser evaluationの結果およびPASS evidenceを記録したcommitであり、Reference Implementationそのものではない。
 
 ## 11. Deliberately Not Specified
 
