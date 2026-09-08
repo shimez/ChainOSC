@@ -13,6 +13,21 @@
 | Hardware | ChainOSCPad / XIAO ESP32S3 |
 | PlatformIO environment | `xiao_esp32s3` |
 
+### P7 Device Preset v1 Compatibility Closure Metadata
+
+| Item | Value |
+|---|---|
+| Closure date | 2026-09-08 |
+| ChainOSC Source of Truth HEAD | `b781b28ea0d9fb68d36896845f48f66a4d76d287` |
+| Explicit Legacy-to-V2 Migration specification commit | `9652814bf1ffa867873aeeec36a831f84a6dc312` |
+| ChainOSCPad version | `1.0.3` |
+| ChainOSCPad branch | `main` |
+| P6 implementation commit | `772c7c93c045ab2ced06ad804005acd2d08631ab` |
+| P6 Physical E2E evidence commit | `84db40c03fa77cd4cce5a78ce29d27de49af3d1b` |
+| P6 Physical E2E hardware | ChainOSCPad / XIAO ESP32C5 |
+| P6 PlatformIO environment | `xiao_esp32c5` |
+| P6 browser | Microsoft Edge 152 |
+
 ## 1. Purpose
 
 This document records the conformance verification of the ChainOSCPad
@@ -48,8 +63,11 @@ Reference specification and validation assets:
 -   Encoder runtime vectors under `test-data/device-presets-v2/`
 
 Migration fixtures under `test-data/device-presets-v2/migration/` are
-part of the common Device Preset v2 test assets, but v1-to-v2 migration
-conformance is outside the scope of this record.
+part of the common Device Preset v2 test assets. This record asserts the
+product-level Device Preset v1 compatibility established by the P3--P6
+implementation and verification work. Import-time lossless migration,
+non-lossless Legacy preservation, and explicit migration of a persisted
+Legacy setting are treated as distinct behaviors.
 
 The following Device Preset v2 device types are outside the scope of
 this record:
@@ -126,6 +144,11 @@ OSC Output
 Seven representative hardware tests were executed. The complete
 valid/invalid fixture set was not individually submitted to the physical
 device.
+
+Additional P6 lifecycle verification was later performed on XIAO
+ESP32C5 against implementation commit `772c7c9`. Its completed evidence
+is fixed by ChainOSCPad commit `84db40c` and is summarized in Section
+9.1. The original seven-test XIAO ESP32S3 evidence remains unchanged.
 
 ------------------------------------------------------------------------
 
@@ -305,19 +328,124 @@ These two cases are therefore classified as N/A rather than failures.
 
 ------------------------------------------------------------------------
 
-## 7. Migration Status
+## 7. Device Preset v1 Compatibility
 
-Migration fixtures are maintained as part of the common Device Preset v2
-test assets.
+Device Preset v1 compatibility is asserted using the common migration
+manifest, the ChainOSCPad P3--P6 implementation history, source review,
+build verification, and physical E2E evidence. This assertion does not
+mean that every valid v1 preset is converted automatically to V2.
 
-However, **v1-to-v2 Migration conformance is not asserted by this
-ChainOSCPad conformance record**.
+Relevant ChainOSCPad implementation history:
 
-Migration fixtures and migration behavior should be evaluated and
-recorded separately when formal product-level migration conformance is
-established.
+| Phase | Commit | Evidence represented |
+|---|---|---|
+| P3 | `e70eb89` | Device Preset v1 validation and Import classification |
+| P4 | `8625ac5` | Legacy Encoder runtime compatibility |
+| P5 | `281f7b3` | Model-aware Device Preset Export |
+| P6 | `772c7c9` | Legacy WebUI and explicit Legacy-to-V2 migration |
+| P6 E2E | `84db40c` | Recorded physical E2E verification |
 
-No migration PASS count should be inferred from this document.
+### 7.1 v1 Validation and Import Classification
+
+The common migration manifest defines eight cases with these expected
+outcomes:
+
+``` text
+v2-migration: 1
+legacy-import: 6
+import-error: 1
+```
+
+| Case | Expected and verified result |
+|---|---|
+| `MIG-AMOUNT-STOP-ZERO-BASED` | `v2-migration` |
+| `MIG-AMOUNT-ZERO-BASED` | `legacy-import` |
+| `MIG-AMOUNT-OFFSET` | `legacy-import` |
+| `MIG-AMOUNT-FRACTIONAL-SPAN` | `legacy-import` |
+| `MIG-DIRECTION-FLOAT-CLAMP` | `legacy-import` |
+| `MIG-DIRECTION-INT-ROUND` | `legacy-import` |
+| `MIG-DIRECTION-STRING` | `legacy-import` |
+| `MIG-V1-INVALID-SEQUENCE-STEP-ZERO` | `import-error` / `E_SEQUENCE_STEP_ZERO` |
+
+Result:
+
+``` text
+8 / 8 PASS
+```
+
+The valid lossless case is imported as the V2 model. Each valid but
+non-lossless case is imported as the Legacy model with its v1 values and
+semantics preserved. The invalid v1 case is rejected before migration;
+it does not fall back to Legacy and does not modify the existing state.
+
+### 7.2 Legacy Runtime and Persistence
+
+The Legacy model preserves the historical ChainOSCPad Encoder behavior,
+including absolute-input range and offset, half-open Legacy Wrap,
+multi-Step Increment behavior, output conversion, and Push settings.
+
+Model-aware storage preserves the Legacy/V2 discriminator and
+model-specific fields across save and reboot. An ordinary Save of a
+Legacy setting remains Legacy and does not implicitly promote it to V2.
+
+Result:
+
+``` text
+PASS
+```
+
+### 7.3 Model-aware Export
+
+Export follows the persisted model:
+
+``` text
+Persisted Legacy -> Device Preset v1
+Persisted V2     -> Device Preset v2
+```
+
+An unsaved explicit-migration candidate is not a persisted V2 model and
+therefore does not change the Export boundary; Export remains Device
+Preset v1 until the candidate is saved successfully.
+
+Result:
+
+``` text
+PASS
+```
+
+### 7.4 Explicit Legacy-to-V2 Migration
+
+Explicit migration from a persisted Legacy setting is separate from the
+Import-time `v2-migration` classification. It begins only after an
+explicit user action and creates an editable, volatile V2 candidate.
+
+Candidate creation and editing do not change the persisted Legacy model,
+active Legacy runtime, or Export format. Cancel and validation failure
+preserve Legacy. Legacy-to-V2 promotion occurs only after an explicit,
+valid Save and storage readback succeed.
+
+The migration UI covers non-lossless Legacy cases without representing
+them as lossless. Exact values are copied where possible, deterministic
+suggestions are identified as candidates, and unresolved V2 values such
+as a fractional `rangeSteps` conversion require user input.
+
+Result:
+
+``` text
+PASS
+```
+
+### 7.5 Post-migration V2 Behavior
+
+After successful explicit migration, the V2 model, runtime, persistence,
+and Device Preset v2 Export behavior apply. Physical verification covered
+inclusive-endpoint Amount Wrap, V2 Export, and reboot restoration.
+
+Result:
+
+``` text
+PASS
+```
 
 ------------------------------------------------------------------------
 
@@ -339,6 +467,15 @@ review.
 
 The exact PlatformIO environment used for the recorded verification must
 be entered in the Test Metadata section.
+
+### 8.1 v1 Compatibility Build Coverage
+
+The P3 compatibility verification recorded successful PlatformIO builds
+for XIAO ESP32S3, ESP32C3, and ESP32C6. A contemporaneous ESP32C5
+automation attempt encountered the known Windows toolchain error code 5,
+rather than a source compilation error. The final P6 implementation
+was subsequently built, uploaded, and exercised successfully on physical
+XIAO ESP32C5 hardware as recorded by the P6 evidence commit.
 
 ------------------------------------------------------------------------
 
@@ -547,6 +684,33 @@ This confirms that the ChainOSCPad lazy-reset implementation is
 externally equivalent to the normative Device Preset v2 reset semantics
 for the tested setting change.
 
+### 9.1 P6 Legacy Compatibility and Explicit Migration E2E
+
+The detailed P6 evidence is recorded in
+`ChainOSCPad_P6_Physical_E2E_Test_Procedure.md` at ChainOSCPad evidence
+commit `84db40c03fa77cd4cce5a78ce29d27de49af3d1b`. The implementation under
+test is commit `772c7c93c045ab2ced06ad804005acd2d08631ab`.
+
+Recorded results:
+
+| P6 verification group | Result |
+|---|---|
+| Main Functional / State / Persistence | 9 / 9 PASS |
+| Additional Candidate Coverage | 3 / 3 PASS |
+| Fixed Encoder WebUI Visual / Interaction | 10 / 10 PASS |
+| Overall P6 Physical E2E | PASS |
+
+The independent P6 review result was `PASS WITH FINDINGS`, with no
+BLOCKING findings and a recommendation that P6 be treated as COMPLETE.
+The findings concerned only evidence-document traceability and an unused
+template table; they do not weaken the recorded functional or UI results.
+
+The evidence covers Legacy Import and runtime, ordinary Legacy Save,
+candidate creation, Cancel, invalid candidate Save, successful explicit
+migration, post-migration V2 runtime and Export, reboot persistence,
+non-lossless candidate examples, responsive layout, and one-shot
+navigation/scroll behavior.
+
 ------------------------------------------------------------------------
 
 ## 10. Final Result
@@ -560,7 +724,16 @@ for the tested setting change.
 | Chain Encoder-specific runtime vectors | Not applicable to built-in Encoder | 2 N/A |
 | PlatformIO XIAO ESP32S3 build | Build verification | PASS |
 | Physical hardware E2E tests | XIAO ESP32S3 hardware | 7 / 7 PASS |
-| v1-to-v2 Migration conformance | Outside this record's scope | NOT ASSERTED |
+| v1 validation and Import classification | Common migration manifest + ChainOSCPad P3 evidence | 8 / 8 PASS |
+| Lossless v1 to V2 Import | `MIG-AMOUNT-STOP-ZERO-BASED` | 1 / 1 PASS |
+| Non-lossless v1 to Legacy Import | Six Legacy-preservation cases | 6 / 6 PASS |
+| Invalid v1 rejection | Invalid Sequence case | 1 / 1 PASS |
+| Legacy runtime / persistence | P4 verification + P6 Physical E2E | PASS |
+| Legacy Device Preset v1 Export | P5 implementation + P6 Physical E2E | PASS |
+| Explicit Legacy to V2 migration | P6 implementation and Physical E2E | PASS |
+| Post-migration V2 behavior | P6 Physical E2E | PASS |
+| P6 Fixed Encoder WebUI | Encoder Fixed Reference + Physical E2E | 10 / 10 PASS |
+| Independent P6 review | No BLOCKING findings | PASS WITH FINDINGS / P6 COMPLETE |
 
 Overall result for the tested Device Preset v2 Encoder scope:
 
@@ -568,9 +741,10 @@ Overall result for the tested Device Preset v2 Encoder scope:
 PASS
 ```
 
-No known Device Preset v2 Encoder semantic mismatch remains between the
-normative specification, common test assets, and the ChainOSCPad
-implementation for the tested scope.
+No known Device Preset v2 Encoder or asserted Device Preset v1
+compatibility mismatch remains between the normative specification,
+common test assets, and the ChainOSCPad implementation for the tested
+scope.
 
 This result must be interpreted together with the verification-method
 distinctions and limitations recorded in this document.
