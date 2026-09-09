@@ -97,7 +97,7 @@ KeyおよびEncoderはFixed Reference UIであるが、他のDeviceの万能テ�
 
 ### 5.10 Device Card Header
 
-- Device card headerは、Device種別と製品全体で1から始まる連番を同一badgeに`[Type #N]`形式で表示すること。
+- Device card headerは、製品全体で1から始まる連番とDevice種別を同一badgeに`[#N Type]`形式で表示すること。
 - Device名はbadgeとは別の要素として表示すること。
 - 連番はDevice種別ごとに再開始してはならない。
 
