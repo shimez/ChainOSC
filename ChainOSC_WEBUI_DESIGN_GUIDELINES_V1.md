@@ -1,6 +1,6 @@
 # ChainOSC WebUI Design Guidelines v1
 
-Status: Draft — Encoder Fixed  
+Status: Draft — Key / Encoder Fixed
 Language: Japanese  
 Initial Reference Implementation: ChainOSCPad Encoder WebUI
 
@@ -15,10 +15,11 @@ Initial Reference Implementation: ChainOSCPad Encoder WebUI
 本版は次の3分類を扱う。
 
 - **Common**: 現時点でシリーズ共通のUX/design原則として扱える規則
+- **Key — Fixed**: ChainOSCPad Key WebUIで受け入れ済みの具体的な視覚・操作規則
 - **Encoder — Fixed**: ChainOSCPad Encoder WebUIで受け入れ済みの具体的な視覚・操作規則
 - **UNSPECIFIED**: 本版ではDevice固有UIが未確定の領域
 
-Encoderは最初のReference Implementationであるが、全Deviceの万能テンプレートではない。
+KeyおよびEncoderはFixed Reference UIであるが、他のDeviceの万能テンプレートではない。
 
 ## 3. Normative Language
 
@@ -93,6 +94,12 @@ Encoderは最初のReference Implementationであるが、全Deviceの万能テ�
 - 内部データ構造名だけで説明を完結させず、ユーザーが実際の動作を想像できる表現を優先すること。
 - semanticsが変化する可能性を示す場合は、変更前後のobservable behaviorを具体的に記述すること。
 - warningを曖昧な「エラー」や「互換性がありません」だけで終わらせないこと。
+
+### 5.10 Device Card Header
+
+- Device card headerは、Device種別と製品全体で1から始まる連番を同一badgeに`[Type #N]`形式で表示すること。
+- Device名はbadgeとは別の要素として表示すること。
+- 連番はDevice種別ごとに再開始してはならない。
 
 ## 6. Encoder — Fixed Reference UI
 
@@ -249,33 +256,44 @@ viewport widthが800 px以下の場合:
 - scroll実装のために、Migration commandを再実行可能なURL queryとして残してはならない。
 - scroll behaviorは視覚的navigationの規則であり、Migrationの製品semanticsを変更してはならない。
 
-## 7. Unspecified Device UIs
+## 7. Key — Fixed Reference UI
+
+### 7.1 Overall Structure
+
+- Device header、Device identityおよびImport status、デバイス名、Key設定の順序を維持すること。
+- Key設定では`Press / Release`と`Sequence`の既存表示条件および意味を変更してはならない。
+- OSC message editorは、OSC Address、Value、Type、Delete actionの対応が明確であること。
+
+### 7.2 Responsive Behavior
+
+- viewportが **800 px以下** の場合、Key設定fieldは意味上の順序を保ったsingle-columnへ折り返すこと。
+- wide layoutでは同格fieldを既存の複数column配置で表示すること。
+- intermediate widthではOSC message editorを自然に折り返し、Delete actionを2段目右端へ配置すること。
+- Desktop、intermediate、Mobileのいずれでも、Device cardまたは入力欄に水平overflowを発生させてはならない。
+
+## 8. Unspecified Device UIs
 
 次のDevice固有layoutは本版では **UNSPECIFIED** である。
 
-### 7.1 Key
+### 8.1 Angle
 
 Device-specific layout: UNSPECIFIED
 
-### 7.2 Angle
+### 8.2 ToF
 
 Device-specific layout: UNSPECIFIED
 
-### 7.3 ToF
+### 8.3 Joystick
 
 Device-specific layout: UNSPECIFIED
 
-### 7.4 Joystick
-
-Device-specific layout: UNSPECIFIED
-
-### 7.5 Other Devices
+### 8.4 Other Devices
 
 本書でFixedと明記されていないDevice-specific UIはUNSPECIFIEDである。
 
-**UNSPECIFIEDなDevice UIをEncoder layoutから機械的に導出してはならない。** KeyをEncoderと同じsection構造にする、Joystickを同じ3-columnにする、Angleへ同じaccent色を割り当てる、といった決定は本書から導出できない。
+**UNSPECIFIEDなDevice UIをKeyまたはEncoder layoutから機械的に導出してはならない。** Joystickを同じ3-columnにする、Angleへ同じaccent色を割り当てる、といった決定は本書から導出できない。
 
-## 8. Fixed UI Change Policy
+## 9. Fixed UI Change Policy
 
 **Existing Fixed UI SHALL NOT be visually redesigned unless explicitly requested.**
 
@@ -293,7 +311,7 @@ Device-specific layout: UNSPECIFIED
 
 新しい要件がFixed ruleと衝突する場合、実装者は黙って再設計せず、衝突する規則と必要な判断を報告しなければならない。
 
-## 9. Guidelines Evolution Policy
+## 10. Guidelines Evolution Policy
 
 Device固有UIは次の順序で本書へ追加する。
 
@@ -315,24 +333,24 @@ Guidelines revision FROZEN
 
 Device固有の具体的なvisual ruleをCommonへ昇格するのは、原則として複数の受け入れ済み実装などから共有Design Languageである根拠が得られた場合とする。単一Deviceの具体的なlayout、spacing、color、field arrangement等の採用だけを理由にCommon化してはならない。
 
-Encoder固有UIはIndependent ReviewおよびChainOSCPadでのreal-device / browser evaluationを完了し、Fixed Reference UIとして確定している。本Guidelines v1全体は、UNSPECIFIEDなDevice UIを今後追加・評価するため、Draftとして継続する。
+KeyおよびEncoder固有UIはHuman acceptanceを完了し、Fixed Reference UIとして確定している。本Guidelines v1全体は、UNSPECIFIEDなDevice UIを今後追加・評価するため、Draftとして継続する。
 
-## 10. Reference Implementation
+## 11. Reference Implementation
 
 - Product: ChainOSCPad
-- Area: Encoder WebUI
+- Area: Key / Encoder WebUI
 - Repository: `shimez/ChainOSCPad`
 - Branch: `main`
-- Reference Implementation commit: `772c7c93c045ab2ced06ad804005acd2d08631ab`
+- Reference Implementation commit: `d2012e18b3c31859e535775ce67d45228f4041e8`
 - Physical E2E verification commit: `84db40c03fa77cd4cce5a78ce29d27de49af3d1b`
 - Relevant source: `src/network_manager.cpp`
-- Verification date: 2026-09-08
+- Verification date: 2026-09-09
 
-Reference Implementation commitは、Fixed Encoder WebUI、P6 Legacy WebUI／explicit Migration実装、およびPhysical E2E中に受け入れられたwording refinementを含む確定済み実装を指す。
+Reference Implementation commitは、受け入れ済みのFixed Key / Encoder WebUI、P6 Legacy WebUI／explicit Migration実装、およびPhysical E2E中に受け入れられたwording refinementを含む確定済み実装を指す。
 
 Physical E2E verification commitは、上記Reference Implementationに対して実施したreal-device / browser evaluationの結果およびPASS evidenceを記録したcommitであり、Reference Implementationそのものではない。
 
-## 11. Deliberately Not Specified
+## 12. Deliberately Not Specified
 
 本書は次を定義しない。
 
@@ -342,5 +360,5 @@ Physical E2E verification commitは、上記Reference Implementationに対して
 - 保存transactionまたは永続化形式
 - Import/Export behavior
 - validation semantics
-- Key、Angle、ToF、JoystickのDevice固有layout
+- Angle、ToF、JoystickのDevice固有layout
 - 共通frontend framework、共通UI library、またはshared source-code architecture
