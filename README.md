@@ -50,6 +50,8 @@ XIAO ESP32シリーズと12キーのマトリクス、Encoderを組み合わせ�
 - OSCのFloat、Int、String値（対応する入力・製品の範囲内）
 - Device Preset JSONによるデバイス単位の設定のエクスポート／インポート
 - Key用のDevice Preset v1を、M5ChainOSC、ChainOSCmini、ChainOSCnano、ChainOSCPad、ChainOSC for Windowsの5製品で共有
+- Encoder用のDevice Preset v1を、M5ChainOSC、ChainOSCmini、ChainOSCnano、ChainOSCPadの4製品で共有
+- Angle、ToF、Joystick用のDevice Preset v1を、M5ChainOSC、ChainOSCmini、ChainOSCnanoの3製品で共有
 
 ## Compatibility and Specifications
 
