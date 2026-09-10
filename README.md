@@ -1,6 +1,6 @@
 # ChainOSC
 
-ChainOSCは、M5Stack ChainデバイスとWindowsのグローバルホットキーを、OSC（Open Sound Control）メッセージへ変換するシリーズです。ハードウェアやアプリが異なっても、ブラウザーまたは設定画面から入力とOSC送信先を設定し、VRChatなどOSCを受信できるアプリケーションで利用できます。
+ChainOSCは、M5Stack ChainデバイスやXIAOを利用したパッド型ハードウェア、WindowsのグローバルホットキーからOSC（Open Sound Control）メッセージを送信するシリーズです。ハードウェアやアプリが異なっても、ブラウザーまたは設定画面からOSCメッセージとその送信先を共通の考え方で設定し、VRChatなどOSCを受信できるアプリケーションで利用できます。
 
 このプロジェクトのソフトウェア、Webサイト、ドキュメントは、OpenAI Codexとの協働により制作されています。
 
