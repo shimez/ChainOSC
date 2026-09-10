@@ -55,11 +55,15 @@ XIAO ESP32シリーズと12キーのマトリクス、Encoderを組み合わせ�
 
 ## Compatibility and Specifications
 
+ChainOSCシリーズでは、製品間で設定を共有するためのDevice Preset形式や、互換性を保つための共通仕様・テスト資産を管理しています。以下は主に開発者向けの技術資料です。
+
 ### Device Preset v1
 
-Keyのmaintained canonical formatはDevice Preset v1です。Key v1は現行仕様であり、Legacy形式やdeprecated形式ではありません。
+Device Preset v1は、Key、Encoder、Angle、ToF、Joystickのデバイス設定に使用されている形式です。対応するDevice Typeと製品の間で、設定をエクスポート／インポートできます。
 
-[`DEVICE_PRESET_FORMAT_V1.md`](DEVICE_PRESET_FORMAT_V1.md)で、`schemaVersion: 1`の正規出力とKeyを含むv1デバイス設定を定義しています。
+KeyではDevice Preset v1がmaintained canonical formatです。Encoderではv1も使用されていますが、Device Preset v2が定義されており、現在のnormative targetはv2です。
+
+詳細は[`DEVICE_PRESET_FORMAT_V1.md`](DEVICE_PRESET_FORMAT_V1.md)を参照してください。
 
 ### Device Preset v2
 
