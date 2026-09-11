@@ -28,7 +28,7 @@
 
 全体設定JSONは製品間互換ではありません。デバイス単位の`ChainOSC-device-preset`だけを互換対象とします。
 
-デバイスプリセットの現行Exporter正規出力は[`DEVICE_PRESET_FORMAT_V1.md`](DEVICE_PRESET_FORMAT_V1.md)で定義し、[`schemas/chainosc-device-preset-v1.schema.json`](schemas/chainosc-device-preset-v1.schema.json)とcanonical fixtureを基準に確認します。Importerの旧形式対応は、この正規出力仕様とは分けて扱います。
+Device Presetの正規形式は、Device Typeと`schemaVersion`に対応する仕様を基準に確認します。Key v1およびDevice Preset v1互換試験では[`DEVICE_PRESET_FORMAT_V1.md`](DEVICE_PRESET_FORMAT_V1.md)と[`schemas/chainosc-device-preset-v1.schema.json`](schemas/chainosc-device-preset-v1.schema.json)、Encoder v2では[`DEVICE_PRESET_FORMAT_V2.md`](DEVICE_PRESET_FORMAT_V2.md)と対応するv2 JSON Schema／fixtureを参照します。Importerの旧形式対応は、各正規出力仕様とは分けて扱います。
 
 ## テスト結果の記録
 
@@ -252,7 +252,9 @@ EncoderだけはChainOSCPadを含む次の経路で確認します。
 M5ChainOSC → ChainOSCmini → ChainOSCnano → ChainOSCPad → M5ChainOSC
 ```
 
-### SERIES-PRESET-ENC-01 Encoder
+### SERIES-PRESET-ENC-01 Encoder（Device Preset v1互換試験）
+
+この試験はDevice Preset v1 Encoderの製品間互換性を確認します。Encoder v2のnormative semanticsおよびconformanceは、[`DEVICE_PRESET_FORMAT_V2.md`](DEVICE_PRESET_FORMAT_V2.md)と対応するschema、fixture、runtime test vector、製品別Conformance Recordを基準に確認します。
 
 確認項目:
 
@@ -469,10 +471,11 @@ M5ChainOSC → ChainOSCmini → ChainOSCnano → ChainOSCPad → M5ChainOSC
 
 ### SERIES-STORAGE-M5-01 M5ChainOSC
 
-- 40件の全体設定JSONをインポート、再保存、再起動後に復元する
-- 上限超過JSONを拒否し、既存設定を維持する
-- 保存、削除、再登録を繰り返してNVS残量と再起動の有無を確認する
-- 公開済み旧保存形式からの移行を確認する
+- Key、Encoder、Angle、Joystick、ToFの各デバイス種類について、保存上限40件の境界まで設定を保存し、再保存、再起動後に読み戻せることを確認する
+- 各デバイス種類で上限を超える保存を拒否し、既存設定を維持する
+- 全体設定JSONのインポート／エクスポートと、デバイス種類ごとの保存上限試験を分けて実施する
+- 保存、削除、再登録を繰り返し、LittleFSの使用量・空き容量と書き込み後の読み戻し、および意図しない再起動の有無を確認する
+- 公開済み旧NVS保存形式からLittleFSへの移行を確認する
 
 ### SERIES-STORAGE-MINI-01 ChainOSCmini
 
