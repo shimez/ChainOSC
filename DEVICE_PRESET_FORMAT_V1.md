@@ -1,12 +1,13 @@
 # ChainOSC Device Preset JSON Format v1
 
-この文書は、ChainOSCシリーズの現行Exporterが生成する`ChainOSC-device-preset`、`schemaVersion: 1`の正規出力仕様を定義します。
+この文書は、`ChainOSC-device-preset`、`schemaVersion: 1`の正規形式を定義します。
 
 ## 位置づけ
 
+- Device Preset v1は、Key、Encoder、Angle、ToF、Joystickのデバイス設定で使用されています。
 - Keyのmaintained canonical formatはDevice Preset v1です。Key v1は現行仕様であり、Legacyでもdeprecatedでもありません。Keyの新規正規Exportは`schemaVersion: 1`を使用します。
 - format versionはデバイス種類ごとのcontract evolutionを表します。すべてのデバイス種類が同時に同じ`schemaVersion`へ移行する必要はありません。現在、Device Preset v2の規範対象はEncoderです。
-- 本仕様は**現行Exporterが新規に出力するJSON**を定義します。
+- 本仕様は`schemaVersion: 1`として正規に出力されるJSONを定義します。
 - Importerは、公開済みバージョンとの互換性維持のため、本仕様より緩い入力や旧`M5ChainOSC-device-preset`を受け入れる場合があります。
 - Importerが受け入れることは、そのJSONがv1の正規出力であることを意味しません。
 - プリセットはデバイス単体の動作設定です。UID、Device Name、組み込みデバイス識別子、Windowsのホットキーなど、インポート先固有の情報は含めません。
@@ -216,6 +217,6 @@ Importerが検証失敗時に返す共通Error Code、拒否条件、日本語�
 
 ## 変更方針
 
-- v1の正規出力へ任意項目を追加する場合でも、5製品のExporter、Schema、fixture、共通テストを同時に更新します。
+- v1の正規出力へ任意項目を追加する場合は、そのDevice Typeのv1正規出力に対応する製品のExporter、Schema、fixture、共通テストを整合させます。
 - 必須項目の削除、型変更、意味変更など、既存の正規v1ファイルを壊す変更は新しい`schemaVersion`で行います。
 - Importerの後方互換処理は各製品の互換性方針で管理し、この正規出力仕様へ混在させません。
