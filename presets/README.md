@@ -6,11 +6,12 @@ ChainOSCシリーズ対応製品で利用できる、デバイス単位の実用
 
 ## 対応形式と製品
 
-収録Presetはすべて`format: ChainOSC-device-preset`、`schemaVersion: 1`です。Encoderの収録Presetもv1形式であり、Encoder v2へ自動変換されません。
+収録Presetはすべて`format: ChainOSC-device-preset`です。Encoderには、現在の推奨例である`schemaVersion: 2`と、Legacy互換例である`schemaVersion: 1`を収録しています。Encoder v1 Presetは引き続きImport可能であり、Encoder v2へ自動変換されません。
 
 | Device Type | 利用可能な製品 |
 |---|---|
 | Key v1 | M5ChainOSC、ChainOSCmini、ChainOSCnano、ChainOSCPad、ChainOSC for Windows |
+| Encoder v2 | M5ChainOSC、ChainOSCmini、ChainOSCnano、ChainOSCPad |
 | Encoder v1 | M5ChainOSC、ChainOSCmini、ChainOSCnano、ChainOSCPad |
 | Angle v1 | M5ChainOSC、ChainOSCmini、ChainOSCnano |
 | Joystick v1 | M5ChainOSC、ChainOSCmini、ChainOSCnano |
@@ -34,7 +35,8 @@ PresetにはUID、Device Name、接続ポートなどのインポート先固有
 
 ### Encoder
 
-- [VRChat Camera Zoom](encoder/encoder-vrchat-camera-zoom.json)
+- [VRChat Camera Zoom — Encoder v2 Amount mode（推奨例）](encoder/encoder-vrchat-camera-zoom-v2.json)
+- [VRChat Camera Zoom — Encoder v1（Legacy互換例）](encoder/encoder-vrchat-camera-zoom.json)
 
 ### Angle
 
