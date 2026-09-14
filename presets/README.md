@@ -15,6 +15,7 @@ ChainOSCシリーズ対応製品で利用できる、デバイス単位の実用
 | Encoder v1 | M5ChainOSC、ChainOSCmini、ChainOSCnano、ChainOSCPad |
 | Angle v1 | M5ChainOSC、ChainOSCmini、ChainOSCnano |
 | Joystick v1 | M5ChainOSC、ChainOSCmini、ChainOSCnano |
+| ToF v1 | M5ChainOSC、ChainOSCmini、ChainOSCnano |
 
 ## 使い方
 

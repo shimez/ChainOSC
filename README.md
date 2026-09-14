@@ -53,6 +53,9 @@ XIAO ESP32シリーズと12キーのマトリクス、Encoderを組み合わせ�
 - Encoder用のDevice Preset v2を、M5ChainOSC、ChainOSCmini、ChainOSCnano、ChainOSCPadの4製品で共有
 - Encoder用のDevice Preset v1は、同じ4製品でLegacy互換としてImport可能
 - Angle、ToF、Joystick用のDevice Preset v1を、M5ChainOSC、ChainOSCmini、ChainOSCnanoの3製品で共有
+- Angleは8-bit／12-bit入力、Minimum Change（最小変化量）、出力mappingを共通化し、Resolution変更時を含むruntime baseline semanticsを定義
+- JoystickはX／Y、Invert X／Y、Minimum Change（最小変化量）の軸別判定、出力mapping、Press / ReleaseまたはSequenceによるPushを共通化
+- ToFはmm単位の距離、Minimum Change (mm)（最小変化量 (mm)）、Maximum Distance、Output Directionと、baselineがない状態で最初の有効値を送信するruntime semanticsを共通化
 
 ## Compatibility and Specifications
 
@@ -93,9 +96,13 @@ fixtureの検証スクリプトは[`scripts/validate_device_preset_v2_fixtures.m
 
 ### WebUI Design Guidelines
 
-WebUIの共通方針と、現在固定されているKey／Encoder UIの基準は[`ChainOSC_WEBUI_DESIGN_GUIDELINES_V1.md`](ChainOSC_WEBUI_DESIGN_GUIDELINES_V1.md)で管理しています。
+WebUIの共通方針と、現在固定されているKey／Encoder／Angle／Joystick／ToF UIの基準は[`ChainOSC_WEBUI_DESIGN_GUIDELINES_V1.md`](ChainOSC_WEBUI_DESIGN_GUIDELINES_V1.md)で管理しています。
 
-状態は **Draft — Key / Encoder Fixed** です。Angle、ToF、Joystickの具体的なDevice UIは、このガイドラインで先行して定義していません。
+状態は **Draft — Key / Encoder / Angle / Joystick / ToF Fixed** です。
+
+### Runtime Semantics
+
+Angle、Joystick、ToFのシリーズ共通runtime behaviorは[`CHAIN_DEVICE_RUNTIME_SEMANTICS_V1.md`](CHAIN_DEVICE_RUNTIME_SEMANTICS_V1.md)で定義しています。
 
 ## Series Portal
 

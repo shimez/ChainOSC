@@ -1,6 +1,6 @@
 # ChainOSC WebUI Design Guidelines v1
 
-Status: Draft — Key / Encoder Fixed
+Status: Draft — Key / Encoder / Angle / Joystick / ToF Fixed
 Language: Japanese  
 Initial Reference Implementation: ChainOSCPad Encoder WebUI
 
@@ -12,14 +12,17 @@ Initial Reference Implementation: ChainOSCPad Encoder WebUI
 
 ## 2. Scope
 
-本版は次の3分類を扱う。
+本版は次の分類を扱う。
 
 - **Common**: 現時点でシリーズ共通のUX/design原則として扱える規則
 - **Key — Fixed**: ChainOSCPad Key WebUIで受け入れ済みの具体的な視覚・操作規則
 - **Encoder — Fixed**: ChainOSCPad Encoder WebUIで受け入れ済みの具体的な視覚・操作規則
+- **Angle — Fixed**: Angle WebUIで受け入れ済みの項目、順序、表示規則
+- **Joystick — Fixed**: Joystick WebUIで受け入れ済みの項目、順序、表示規則
+- **ToF — Fixed**: ToF WebUIで受け入れ済みの項目、順序、表示規則
 - **UNSPECIFIED**: 本版ではDevice固有UIが未確定の領域
 
-KeyおよびEncoderはFixed Reference UIであるが、他のDeviceの万能テンプレートではない。
+Key、Encoder、Angle、Joystick、ToFはFixed Reference UIであるが、各Deviceの規則を他のDeviceへ万能テンプレートとして適用してはならない。
 
 ## 3. Normative Language
 
@@ -271,29 +274,113 @@ viewport widthが800 px以下の場合:
 - intermediate widthではOSC message editorを自然に折り返し、Delete actionを2段目右端へ配置すること。
 - Desktop、intermediate、Mobileのいずれでも、Device cardまたは入力欄に水平overflowを発生させてはならない。
 
-## 8. Unspecified Device UIs
+## 8. Angle — Fixed Reference UI
 
-次のDevice固有layoutは本版では **UNSPECIFIED** である。
+設定項目は次の順序とする。
 
-### 8.1 Angle
+1. Device Name（デバイス名）
+2. OSC Address（OSCアドレス）
+3. Resolution（解像度）
+4. Minimum Change（最小変化量）
+5. Output Min（出力最小値）
+6. Output Max（出力最大値）
+7. Output Type（出力型）
 
-Device-specific layout: UNSPECIFIED
+### 8.1 Defaults and Validation
 
-### 8.2 ToF
+- Resolution: 12-bit
+- Minimum Change: 8
+- Output Min: 0
+- Output Max: 1
+- Output Type: Float
+- Resolutionは8-bitまたは12-bit。
+- Minimum Changeは8-bitで1..255、12-bitで1..4095のInteger。
 
-Device-specific layout: UNSPECIFIED
+Minimum Changeのhelp textは次の意味を持つ。
 
-### 8.3 Joystick
+- English: `Changes smaller than Minimum Change do not send OSC messages.`
+- Japanese: `最小変化量に満たない変化ではOSCメッセージを送信しません。`
 
-Device-specific layout: UNSPECIFIED
+Resolution変更時のruntime baseline挙動は、[CHAIN_DEVICE_RUNTIME_SEMANTICS_V1.md](CHAIN_DEVICE_RUNTIME_SEMANTICS_V1.md)を参照すること。
 
-### 8.4 Other Devices
+## 9. Joystick — Fixed Reference UI
+
+設定項目は次の順序とする。
+
+1. Device Name（デバイス名）
+2. X OSC Address（X OSCアドレス）
+3. Y OSC Address（Y OSCアドレス）
+4. Invert X
+5. Invert Y
+6. Minimum Change（最小変化量）
+7. Output Min（出力最小値）
+8. Output Max（出力最大値）
+9. Output Type（出力型）
+10. Push Mode（プッシュモード）
+11. Press / Release または Sequence
+
+### 9.1 Defaults and Validation
+
+- Minimum Change: 3
+- Output Min: 0
+- Output Max: 1
+- Output Type: Float
+- Push Mode: Press / Release
+- Minimum Changeは1..254のInteger。
+
+Minimum Changeのhelp textは次の意味を持つ。
+
+- English: `The same Minimum Change value is applied independently to the X and Y axes. Changes below it do not send OSC messages.`
+- Japanese: `同じ最小変化量をX軸とY軸へ個別に適用します。最小変化量に満たない軸の変化ではOSCメッセージを送信しません。`
+
+Joystick PushのPress / ReleaseおよびSequence表示は、Key / Encoderの既存Fixed UI表現を再利用すること。ChainOSCmini / ChainOSCnanoのPort 2物理方向補正はWeb UI項目に含めないこと。詳細runtimeは[CHAIN_DEVICE_RUNTIME_SEMANTICS_V1.md](CHAIN_DEVICE_RUNTIME_SEMANTICS_V1.md)を参照すること。
+
+## 10. ToF — Fixed Reference UI
+
+設定項目は次の順序とする。
+
+1. Device Name（デバイス名）
+2. OSC Address（OSCアドレス）
+3. Minimum Change (mm)（最小変化量 (mm)）
+4. Maximum Distance (mm)（最大距離 (mm)）
+5. Output Direction（出力方向）
+6. Output Min（出力最小値）
+7. Output Max（出力最大値）
+8. Output Type（出力型）
+
+### 10.1 Defaults and Validation
+
+- Minimum Change: 5 mm
+- Maximum Distance: 2000 mm
+- Output Direction: Near -> Out Min
+- Output Min: 0
+- Output Max: 1
+- Output Type: Float
+- Minimum Changeは1..2000のInteger。
+- Maximum Distanceは31..2000 mmのInteger。
+- Output Directionは`Near -> Out Min`または`Near -> Out Max`。
+
+Minimum Changeのhelp textは次の意味を持つ。
+
+- English: `Changes smaller than Minimum Change do not send OSC messages.`
+- Japanese: `最小変化量に満たない変化ではOSCメッセージを送信しません。`
+
+有効距離のhelp textは次の意味を持つ。
+
+- English: `Valid distances are 30 mm or greater and less than Maximum Distance. Values outside this range do not send OSC messages.`
+- Japanese: `有効距離は30 mm以上、最大距離未満です。範囲外の値ではOSCメッセージを送信しません。`
+
+Maximum Distance自身は有効距離に含めない。runtimeのbaseline無効化・再入場等は[CHAIN_DEVICE_RUNTIME_SEMANTICS_V1.md](CHAIN_DEVICE_RUNTIME_SEMANTICS_V1.md)を参照すること。
+
+## 11. Unspecified Device UIs
+
+### 11.1 Other Devices
 
 本書でFixedと明記されていないDevice-specific UIはUNSPECIFIEDである。
 
 **UNSPECIFIEDなDevice UIをKeyまたはEncoder layoutから機械的に導出してはならない。** Joystickを同じ3-columnにする、Angleへ同じaccent色を割り当てる、といった決定は本書から導出できない。
 
-## 9. Fixed UI Change Policy
+## 12. Fixed UI Change Policy
 
 **Existing Fixed UI SHALL NOT be visually redesigned unless explicitly requested.**
 
@@ -311,7 +398,7 @@ Device-specific layout: UNSPECIFIED
 
 新しい要件がFixed ruleと衝突する場合、実装者は黙って再設計せず、衝突する規則と必要な判断を報告しなければならない。
 
-## 10. Guidelines Evolution Policy
+## 13. Guidelines Evolution Policy
 
 Device固有UIは次の順序で本書へ追加する。
 
@@ -333,9 +420,9 @@ Guidelines revision FROZEN
 
 Device固有の具体的なvisual ruleをCommonへ昇格するのは、原則として複数の受け入れ済み実装などから共有Design Languageである根拠が得られた場合とする。単一Deviceの具体的なlayout、spacing、color、field arrangement等の採用だけを理由にCommon化してはならない。
 
-KeyおよびEncoder固有UIはHuman acceptanceを完了し、Fixed Reference UIとして確定している。本Guidelines v1全体は、UNSPECIFIEDなDevice UIを今後追加・評価するため、Draftとして継続する。
+Key、Encoder、Angle、Joystick、ToFのDevice固有UIはHuman acceptanceを完了し、Fixed Reference UIとして確定している。本Guidelines v1全体は、UNSPECIFIEDなDevice UIを今後追加・評価するため、Draftとして継続する。
 
-## 11. Reference Implementation
+## 14. Reference Implementation
 
 - Product: ChainOSCPad
 - Area: Key / Encoder WebUI
@@ -350,7 +437,7 @@ Reference Implementation commitは、受け入れ済みのFixed Key / Encoder We
 
 Physical E2E verification commitは、上記Reference Implementationに対して実施したreal-device / browser evaluationの結果およびPASS evidenceを記録したcommitであり、Reference Implementationそのものではない。
 
-## 12. Deliberately Not Specified
+## 15. Deliberately Not Specified
 
 本書は次を定義しない。
 
@@ -360,5 +447,5 @@ Physical E2E verification commitは、上記Reference Implementationに対して
 - 保存transactionまたは永続化形式
 - Import/Export behavior
 - validation semantics
-- Angle、ToF、JoystickのDevice固有layout
+- Angle、ToF、JoystickのHTML構造、DOM構造、CSS、pixel単位のspacingおよび具体的なvisual layout
 - 共通frontend framework、共通UI library、またはshared source-code architecture

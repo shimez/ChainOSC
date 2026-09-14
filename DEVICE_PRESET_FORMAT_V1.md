@@ -99,6 +99,8 @@ ToFの`range.type`はFloatまたはIntだけなので、0または1です。
 
 `press`と`release`はそれぞれOSC Messageの配列です。両配列の合計は8件以下です。
 
+The JSON field `deadband` is retained as the Device Preset v1 compatibility name. Its user-facing term is `Minimum Change` / `最小変化量`, or `Minimum Change (mm)` / `最小変化量 (mm)` for ToF. It is not a centre dead zone. Runtime baseline and send behavior are defined in [CHAIN_DEVICE_RUNTIME_SEMANTICS_V1.md](CHAIN_DEVICE_RUNTIME_SEMANTICS_V1.md).
+
 ## Key
 
 `key`は次の項目をすべて持ちます。
@@ -180,6 +182,8 @@ Sequenceの`type`は送信するOSC wire typeを指定します。FloatはOSC fl
 - `deadband`: 1以上のInteger
 - `range`: Range
 
+For Angle, `deadband` is valid from 1 to 255 for 8-bit Resolution and from 1 to 4095 for 12-bit Resolution. See [CHAIN_DEVICE_RUNTIME_SEMANTICS_V1.md](CHAIN_DEVICE_RUNTIME_SEMANTICS_V1.md) for runtime baseline behavior.
+
 ## ToF
 
 `tof`は次の項目をすべて持ちます。
@@ -189,6 +193,8 @@ Sequenceの`type`は送信するOSC wire typeを指定します。FloatはOSC fl
 - `maxDistanceMm`: 31～2000のInteger
 - `nearValueHigh`: Boolean
 - `range`: Range。`type`は0または1
+
+For ToF, `deadband` is Minimum Change in millimetres. `maxDistanceMm` is the exclusive upper bound of the valid range: `30 <= distance < maxDistanceMm`; a distance equal to `maxDistanceMm` is invalid. Runtime behavior is defined in [CHAIN_DEVICE_RUNTIME_SEMANTICS_V1.md](CHAIN_DEVICE_RUNTIME_SEMANTICS_V1.md).
 
 ## Joystick
 
@@ -201,6 +207,8 @@ Sequenceの`type`は送信するOSC wire typeを指定します。FloatはOSC fl
 - `clickMode`: 0または1
 - `press`、`release`: Joystick ClickのOSC Message配列（合計8件以下）
 - `sequence`: Joystick ClickのSequence設定
+
+The single `deadband` value is applied independently to the X and Y Minimum Change comparisons. Axis baseline and send behavior are defined in [CHAIN_DEVICE_RUNTIME_SEMANTICS_V1.md](CHAIN_DEVICE_RUNTIME_SEMANTICS_V1.md).
 
 ## JSON Schemaで完全には表現しない条件
 
