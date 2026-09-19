@@ -240,6 +240,8 @@ ChainOSC for Windows → M5ChainOSC
 
 EncoderはM5ChainOSC、ChainOSCmini、ChainOSCnano、ChainOSCPadで実施します。Angle、ToF、JoystickはM5ChainOSC、ChainOSCmini、ChainOSCnanoで実施します。
 
+Encoder v2 Rotation Reset対応製品では、既存v2 Press / ReleaseおよびSequence fixtureを変更せず回帰確認し、Rotation ResetのAmount／Direction、exact／between Grid、multi-step delta、wrap／stop、runtime-only pending lifetimeを[`test-data/device-presets-v2/encoder-runtime-vectors.json`](test-data/device-presets-v2/encoder-runtime-vectors.json)に従って確認します。Rotation Reset非対応firmwareが同capabilityを使用するv2 Presetを別Modeとして解釈せず、安全に拒否することも確認します。
+
 各デバイス種類について、次の経路を確認します。
 
 ```text

@@ -10,6 +10,8 @@ canonical formatはDevice Preset v1であり、Key fixtureは[`../device-presets
 - `migration/`: v1入力と期待するv2内部表現、または期待Error Code
 - `encoder-runtime-vectors.json`: 製品非依存のEncoder演算・再接続テスト
 
+Rotation Resetは`schemaVersion: 2`へ追加されたcapabilityです。既存v2 fixtureは変更せず回帰資産として維持し、`pushMode: 2`と`resetValue`を使用する正常系・異常系fixtureおよびruntime vectorを追加しています。対応前firmwareがRotation Resetを使用するv2 Presetを安全に拒否することは許容されます。
+
 Angle、ToF、Joystickのv2 fixtureは各仕様が確定するまで追加しません。v1 fixtureは
 [`../device-presets/`](../device-presets/)に残します。
 

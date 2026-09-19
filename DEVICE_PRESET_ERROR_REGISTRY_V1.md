@@ -333,6 +333,8 @@ Context: Key / Press / Message 2 / address
 - Context: `deviceType`、`section`、`field`、`limit`
 - Action: Error ContextとDevice Preset v1を参照して値を修正します。共通して区別する必要が生じた条件は、将来のRegistryで専用Error Codeへ分離できます。
 
+Encoder v2 Rotation Resetでは、`resetValue`欠落に`E_PRESET_REQUIRED_FIELD_MISSING`、JSON型不一致に`E_PRESET_FIELD_TYPE_INVALID`、非有限値・Amount出力範囲外・未知の`pushMode`・選択Modeで禁止されるfieldに`E_PRESET_DEVICE_SETTING_INVALID`を使用します。既存分類で原因を表現できるため、Rotation Reset専用Error Codeは追加しません。
+
 #### E_PRESET_STORAGE_WRITE_FAILED
 
 - Condition: 検証済みプリセットをストレージへ保存できませんでした。

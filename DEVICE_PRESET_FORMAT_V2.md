@@ -13,6 +13,19 @@
 - 機械可読な定義は[`schemas/chainosc-device-preset-v2.schema.json`](schemas/chainosc-device-preset-v2.schema.json)です。
 - 正規例、異常系、Migration例は[`test-data/device-presets-v2/`](test-data/device-presets-v2/)にあります。
 
+### schemaVersion 2のcapability追加方針
+
+Device Preset v2では、既存fieldおよび既存のvalidなv2 Presetの意味を変更しない範囲で、同一`schemaVersion`へ新しいcapabilityを追加する場合があります。新しいcapabilityを使用するv2 Presetは、そのcapabilityに対応していない古いfirmwareで安全にImport拒否される場合があります。未知の`pushMode`やfieldを別の意味へ読み替えたり、無視してImport成功としてはなりません。
+
+| Importer | Preset | 結果 |
+| --- | --- | --- |
+| Rotation Reset対応前 | 既存v2 | Import可能 |
+| Rotation Reset対応後 | 既存v2 | 同じ意味でImport可能 |
+| Rotation Reset対応後 | Rotation Resetを使用するv2 | Import可能 |
+| Rotation Reset対応前 | Rotation Resetを使用するv2 | 安全なImport拒否を許容 |
+
+既存fieldの意味変更、既存v2 Presetを同じ意味で読めなくする変更、または同一JSONを世代間で異なる意味へ解釈する変更には、新しい`schemaVersion`を使用します。
+
 ## 共通ルート
 
 | 項目 | 型 | 値 |
@@ -77,7 +90,8 @@ Encoder v2の正式な回転モードは、次の2種類です。
 | `clockwiseValue` | NumberまたはString | 禁止 | 必須 | 時計回りで送信する固定値 |
 | `counterClockwiseValue` | NumberまたはString | 禁止 | 必須 | 反時計回りで送信する固定値 |
 | `outputType` | Integer | 必須 | 必須 | 0: Float、1: Int、2: String |
-| `pushMode` | Integer | 必須 | 必須 | 0: Press / Release、1: Sequence |
+| `pushMode` | Integer | 必須 | 必須 | 0: Press / Release、1: Sequence、2: Rotation Reset |
+| `resetValue` | NumberまたはString | Mode依存 | Mode依存 | Rotation Resetで送信し、Amountではruntime positionも同期する値 |
 | `press` | Array | 必須 | 必須 | Encoder PushのPressメッセージ |
 | `release` | Array | 必須 | 必須 | Encoder PushのReleaseメッセージ |
 | `sequence` | Object | 必須 | 必須 | Encoder PushのSequence設定 |
@@ -284,12 +298,33 @@ Encoder Pushは回転モードと独立し、Device Preset v1 Keyと同じPress 
 
 - `pushMode = 0`: `press`と`release`を使用
 - `pushMode = 1`: `sequence`を使用
+- `pushMode = 2`: `resetValue`を使用するRotation Reset
 
 `press`、`release`および`sequence`は、選択中の`pushMode`にかかわらず正規出力へ含め、
 Device Preset v1 Keyと同じ型、件数、値域およびSequence方向のValidationを適用します。
 
 Device Preset v2で押し込み操作を表す正式フィールド名は`pushMode`です。`clickMode`は
 Device Preset v2のフィールドではなく、v2 Importerは受理しません。
+
+#### Rotation Reset
+
+Rotation ResetはPress eventでのみ発火し、Release eventではOSC送信またはruntime同期を行ってはなりません。Rotation Resetは`rotationAddress`へ`resetValue`を1回送信します。`press`、`release`、`sequence`は既存モードへ戻した場合の設定を保持するため正規出力へ含めますが、Rotation Reset中のruntimeでは使用しません。
+
+`pushMode = 2`では`resetValue`を必須とします。`pushMode = 0`または`1`の正規出力へ`resetValue`を含めません。これにより既存v2 Presetは変更せずvalidなまま維持されます。
+
+Amount modeの`resetValue`は有限なJSON Numberです。次を満たさなければなりません。
+
+```text
+outputMin <= resetValue <= outputMax
+```
+
+両端を含み、範囲外値をclampしてはなりません。Floatは有限なOSC float32、Intは既存Amount Intと同じ`lroundf`相当の変換後にOSC int32、Stringは既存Amount Stringと同じ固定小数点・小数点以下3桁で送信します。Amount Stringでも任意文字列の`resetValue`は許可しません。
+
+AmountではReset送信時にruntime positionも同期します。`p = (resetValue - outputMin) * rangeSteps / (outputMax - outputMin)`をbinary64で計算し、`abs(p - round(p)) <= min(0.25, 8 * 1.1920929e-7 * max(1, rangeSteps))`なら正規Grid上と判定して、対応する整数positionへ直接同期します。これ以外はGrid間の値としてruntime-onlyのpending状態に保持し、次のnon-zero Amount deltaで進行方向側のGridへ入り、残りのmulti-step deltaを失わず処理します。`clockwiseIncreases`はこの処理より前にdeltaへ適用し、その後は既存のwrapまたはclamp semanticsを適用します。pending状態はDevice Preset、LittleFSまたはbackupへ保存しません。
+
+Direction modeではposition同期を行いません。Directionの`resetValue`は既存の`clockwiseValue`および`counterClockwiseValue`と同じ型・値域を使用します。Floatは有限なfloat32 Number、Intはint32 Integer、StringはUTF-8で128 bytes以下のStringです。
+
+defensive validationに失敗した場合はOSCを送信せず、runtime stateも変更してはなりません。正常なResetでは、runtime stateは受信側の到達確認済み状態ではなく、ChainOSCが最後に指示した論理状態として更新します。
 
 ### Device Preset v1からのImportとMigration
 

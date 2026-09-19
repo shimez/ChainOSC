@@ -180,6 +180,14 @@ async function main() {
     strict: false,
   });
   ajv.addKeyword({
+    keyword: "x-chainosc-finiteFloat32",
+    schemaType: "boolean",
+    type: "number",
+    validate(enabled, data) {
+      return !enabled || Number.isFinite(Math.fround(data));
+    },
+  });
+  ajv.addKeyword({
     keyword: "x-chainosc-pressReleaseMaxItems",
     schemaType: "number",
     type: "object",
@@ -220,6 +228,25 @@ async function main() {
         value < 0 ? -Math.round(-value) : Math.round(value);
       return roundAwayFromZero(outputMin) >= -2147483648 &&
              roundAwayFromZero(outputMax) <= 2147483647;
+    },
+  });
+  ajv.addKeyword({
+    keyword: "x-chainosc-amountResetValid",
+    schemaType: "string",
+    type: "object",
+    validate(_rule, data) {
+      if (data?.pushMode !== 2) return true;
+      if (typeof data?.resetValue !== "number" ||
+          typeof data?.outputMin !== "number" ||
+          typeof data?.outputMax !== "number") return true;
+      const resetValue = Math.fround(data.resetValue);
+      const outputMin = Math.fround(data.outputMin);
+      const outputMax = Math.fround(data.outputMax);
+      if (!Number.isFinite(resetValue) || resetValue < outputMin ||
+          resetValue > outputMax) return false;
+      if (data.outputType !== 1) return true;
+      const rounded = resetValue < 0 ? -Math.round(-resetValue) : Math.round(resetValue);
+      return rounded >= -2147483648 && rounded <= 2147483647;
     },
   });
   const validate = ajv.compile(schema);

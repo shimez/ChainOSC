@@ -184,13 +184,17 @@ Directionの3 fieldは次の順で横一列に配置する。
 
 - Encoder PushはEncoder Rotationとは独立したsectionとして、その直後に配置する。
 - sectionは **5 px** のgreen left accentと **12 px** のleft paddingを持つ。
-- Push Modeは既存の`押した時／離した時`と`シーケンス`の表示条件を維持する。
+- Push Modeは`押した時／離した時`、`シーケンス`、`リセット`を選択できる。英語の第3選択肢は`Rotation Reset`とする。
+- Rotation Reset選択時は`Reset Value`／`リセット値`だけを表示し、Press / Release editorおよびSequence editorを隠すこと。
+- Amountでリセット値が出力範囲外の場合は保存を拒否し、`リセット値は出力範囲内で指定してください。`と同じ意味のエラーを表示すること。
+- Rotation Resetを初めて選択し、保持済みの値がない場合、Amountの初期表示値は`(outputMin + outputMax) / 2`、DirectionはFloat／Intで`0`、Stringで`"0"`とする。ユーザーが編集した値を範囲や型の変更に追従して自動変更せず、無効になった場合は保存時にエラーを表示する。
+- logicalPosition、Grid、pending、inverse mapping等のruntime内部概念をUIへ表示してはならない。
 - Sequence選択時の説明文は、入力controlではない補足テキストとして表示する。
 - Sequence説明は次のobservable behaviorを示す。
 
   `開始値から増減量ずつ進み、終了値を超えると開始値へ戻ります。`
 
-Pushのfield構成、表示条件、意味は本書では再定義しない。
+Press / ReleaseおよびSequenceのfield構成、表示条件、意味は本書では再定義しない。
 
 ### 6.7 Persisted Legacy — Fixed
 

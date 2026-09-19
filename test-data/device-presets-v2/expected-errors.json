@@ -22,6 +22,13 @@
     "invalid/encoder-amount-output-reversed.json": "E_PRESET_DEVICE_SETTING_INVALID",
     "invalid/encoder-amount-mapping-overflow.json": "E_PRESET_DEVICE_SETTING_INVALID",
     "invalid/encoder-amount-int-output-overflow.json": "E_PRESET_DEVICE_SETTING_INVALID",
-    "invalid/encoder-amount-int-output-underflow.json": "E_PRESET_DEVICE_SETTING_INVALID"
+    "invalid/encoder-amount-int-output-underflow.json": "E_PRESET_DEVICE_SETTING_INVALID",
+    "invalid/encoder-rotation-reset-missing-value.json": "E_PRESET_REQUIRED_FIELD_MISSING",
+    "invalid/encoder-rotation-reset-below-min.json": "E_PRESET_DEVICE_SETTING_INVALID",
+    "invalid/encoder-rotation-reset-above-max.json": "E_PRESET_DEVICE_SETTING_INVALID",
+    "invalid/encoder-rotation-reset-value-type-invalid.json": "E_PRESET_FIELD_TYPE_INVALID",
+    "invalid/encoder-rotation-reset-non-finite.json": "E_PRESET_DEVICE_SETTING_INVALID",
+    "invalid/encoder-push-mode-unknown.json": "E_PRESET_DEVICE_SETTING_INVALID",
+    "invalid/encoder-reset-value-with-press-release.json": "E_PRESET_DEVICE_SETTING_INVALID"
   }
 }
