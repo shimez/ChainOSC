@@ -28,7 +28,7 @@
 
 全体設定JSONは製品間互換ではありません。デバイス単位の`ChainOSC-device-preset`だけを互換対象とします。
 
-Device Presetの正規形式は、Device Typeと`schemaVersion`に対応する仕様を基準に確認します。Key v1およびDevice Preset v1互換試験では[`DEVICE_PRESET_FORMAT_V1.md`](DEVICE_PRESET_FORMAT_V1.md)と[`schemas/chainosc-device-preset-v1.schema.json`](schemas/chainosc-device-preset-v1.schema.json)、Encoder v2では[`DEVICE_PRESET_FORMAT_V2.md`](DEVICE_PRESET_FORMAT_V2.md)と対応するv2 JSON Schema／fixtureを参照します。Importerの旧形式対応は、各正規出力仕様とは分けて扱います。
+Device Presetの正規形式は、Device Typeと`schemaVersion`に対応する仕様を基準に確認します。現行Key／Encoder／Joystick v3は[`DEVICE_PRESET_FORMAT_V3.md`](DEVICE_PRESET_FORMAT_V3.md)と対応するschema・fixtureを参照します。Key v1などの旧互換試験は[`DEVICE_PRESET_FORMAT_V1.md`](DEVICE_PRESET_FORMAT_V1.md)とv1 JSON Schema／fixture、Encoder v2旧互換試験は[`DEVICE_PRESET_FORMAT_V2.md`](DEVICE_PRESET_FORMAT_V2.md)とv2 JSON Schema／fixtureを参照します。Angle／ToFの現行Exportはv1です。Importerの旧形式対応は、各正規出力仕様とは分けて扱います。
 
 ## テスト結果の記録
 
@@ -203,22 +203,24 @@ Type  = Float
 
 Device Preset Importerのエラー意味と期待Error Codeは、[`ChainOSC Device Preset Import Error Registry v1`](DEVICE_PRESET_ERROR_REGISTRY_V1.md)および[`test-data/device-presets/expected-errors.json`](test-data/device-presets/expected-errors.json)を参照します。Error Code対応後の製品では、不正fixtureの拒否と設定不変性に加え、期待Error Codeが一致することも確認します。
 
-### SERIES-PRESET-KEY-01 エクスポート構造
+### SERIES-PRESET-KEY-01 エクスポート構造（現行4製品）
 
 各製品からKeyプリセットをエクスポートします。
 
 期待結果:
 
 - `format`が`ChainOSC-device-preset`である
-- 対応する`schemaVersion`を含む
+- `schemaVersion: 3`を含む
 - `deviceType`がKeyを示す
 - UID、ローカルのデバイス名、Windowsのホットキーを含まない
-- Press / Release、Sequence、OSC型と値を保持する
-- v1 JSON Schemaに適合し、canonical Key fixtureと同じ必須項目と型を持つ
+- Press / Release、Sequence（`progressionMode` 0/1）、OSC型と値を保持する
+- v3 JSON Schemaに適合し、現行Key v3 fixtureと同じ必須項目と型を持つ
 
-### SERIES-PRESET-KEY-02 相互インポート
+### SERIES-PRESET-KEY-02 相互インポート（v1互換経路）
 
 次の経路を順に確認します。
+
+この経路にChainOSC for Windowsを含むため、**Key v1互換Preset**を使用します。現行4製品からのKey v3 ExportをWindowsへ読み込めると仮定しません。v3の製品間経路は下記のSERIES-PRESET-V3で確認します。
 
 ```text
 M5ChainOSC → ChainOSCmini
@@ -308,6 +310,31 @@ M5ChainOSC → ChainOSCmini → ChainOSCnano → ChainOSCPad → M5ChainOSC
 - 同じ種類のデバイスへインポートできる
 - 異なる種類のデバイスへのインポートは拒否される
 - エクスポート元とインポート先で設定値とOSC送信結果が一致する
+
+### SERIES-PRESET-V3-01 現行Export・旧版Import
+
+4製品のKey/Encoder、M5ChainOSC・ChainOSCmini・ChainOSCnanoのJoystickで確認します。現行ExportはSequenceの使用状態に関係なくv3で、`progressionMode`を整数0/1で含みます。EncoderはLegacy rotation形状とv2 rotation形状の両方を確認します。Angle/ToFは従来どおりv1をExportします。
+
+現行firmwareへ同じDevice Typeのv1、Encoder v2、v3をそれぞれImportし、必要な動作を維持することを確認します。v1/v2に`progressionMode`がなければLoopです。Encoder v1のrotation modelは製品ごとの既存移行条件に従い、必ずv2へ変わるとは仮定しません。v3をPing-Pong導入前のfirmwareが正しく解釈できるとは仮定せず、未対応schemaとしての拒否を確認します。Windows版へv3を要求しません。
+
+### SERIES-PRESET-V3-02 progressionModeと不正入力
+
+[`test-data/device-presets-v3/`](test-data/device-presets-v3/)のfixtureを使用します。Sequence field欠落→Loop、0→Loop、1→Ping-Pong、-1/2/文字列→拒否。`deviceType`と`deviceTypeName`の不一致、未対応schemaVersion、必須Sequence field欠落、Step=0も拒否します。`1.0`表記のJSON数値はJSON Schema/JavaScriptでは1と区別できない場合があるため、`compat/`の例としてImporterのJSON数値型判定を別途確認します。`current`と`direction`はruntime-onlyであり、Presetのexportに含まれません。
+
+### SERIES-PRESET-V3-03 Ping-PongとLoop回帰
+
+端点を送信し、Ping-Pongでは端点の二重送信およびovershootの持越しを行わないことを確認します。期待送信列（最初の値から順）:
+
+| Start / End / Step | Mode | 期待送信列 |
+| --- | --- | --- |
+| 0 / 3 / 1 | Ping-Pong | `0,1,2,3,2,1,0,1` |
+| 0 / 10 / 3 | Ping-Pong | `0,3,6,9,10,7,4,1,0,3` |
+| 10 / 0 / -3 | Ping-Pong | `10,7,4,1,0,3,6,9,10,7` |
+| 0 / 10 / 20 | Ping-Pong | `0,10,0,10` |
+| 5 / 5 / 1 | Ping-Pong | `5,5,5,5` |
+| 0 / 10 / 3 | Loop | `0,3,6,9,0,3` |
+
+機械可読な送信列は[`test-data/device-presets-v3/runtime-vectors.json`](test-data/device-presets-v3/runtime-vectors.json)を参照してください。旧Loopの進行計算と既存OSC型変換の意味を変えません。
 
 ## 5. JSON入力検証
 

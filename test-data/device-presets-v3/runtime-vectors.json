@@ -1,0 +1,10 @@
+{
+  "cases": [
+    { "id": "ascending-exact", "mode": 1, "start": 0, "end": 3, "step": 1, "expected": [0, 1, 2, 3, 2, 1, 0, 1] },
+    { "id": "ascending-non-divisible", "mode": 1, "start": 0, "end": 10, "step": 3, "expected": [0, 3, 6, 9, 10, 7, 4, 1, 0, 3] },
+    { "id": "descending-non-divisible", "mode": 1, "start": 10, "end": 0, "step": -3, "expected": [10, 7, 4, 1, 0, 3, 6, 9, 10, 7] },
+    { "id": "step-exceeds-range", "mode": 1, "start": 0, "end": 10, "step": 20, "expected": [0, 10, 0, 10] },
+    { "id": "equal-endpoints", "mode": 1, "start": 5, "end": 5, "step": 1, "expected": [5, 5, 5, 5] },
+    { "id": "legacy-loop", "mode": 0, "start": 0, "end": 10, "step": 3, "expected": [0, 3, 6, 9, 0, 3] }
+  ]
+}

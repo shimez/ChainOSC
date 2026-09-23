@@ -4,24 +4,33 @@
 
 ## 正規出力fixture
 
-`device-presets/canonical/`には、現行Exporterが生成する`ChainOSC Device Preset JSON Format v1`のデバイス種類別fixtureがあります。
+`device-presets/canonical/`には、v1 contractのデバイス種類別fixtureがあります。現行ExporterではAngle／ToFがv1、Key／Encoder／Joystickがv3です。
 
 - 仕様: [`../DEVICE_PRESET_FORMAT_V1.md`](../DEVICE_PRESET_FORMAT_V1.md)
 - JSON Schema: [`../schemas/chainosc-device-preset-v1.schema.json`](../schemas/chainosc-device-preset-v1.schema.json)
 
-Exporterを変更した場合は、出力が対応するcanonical fixtureと同じ構造・型・意味を持つことを確認します。空白、数値の小数桁数、オブジェクトのプロパティ順序は比較対象外です。
+Exporterを変更した場合は、出力が対応する**schema世代**のfixtureと同じ構造・型・意味を持つことを確認します。空白、数値の小数桁数、オブジェクトのプロパティ順序は比較対象外です。
 
 ## Device Preset v2開発データ
 
 `device-presets-v2/`には、Encoder v2仕様に対するSchema fixture、v1 Migration例、
-Encoder共通ランタイムテストベクトルがあります。Keyのmaintained canonical fixtureと
+Encoder共通ランタイムテストベクトルがあります。旧Key v1のcanonical fixtureと
 runtime vectorは`device-presets/`にあります。
 
 - 仕様: [`../DEVICE_PRESET_FORMAT_V2.md`](../DEVICE_PRESET_FORMAT_V2.md)
 - JSON Schema: [`../schemas/chainosc-device-preset-v2.schema.json`](../schemas/chainosc-device-preset-v2.schema.json)
 - テストデータ: [`device-presets-v2/README.md`](device-presets-v2/README.md)
 
-v2 fixtureはEncoder v2 Exporterの回帰基準です。Key Exporterの回帰基準にはv1 fixtureを使用します。
+v2 fixtureはEncoder v2 contractの回帰基準です。現行ExporterのKey／Encoder／Joystickは次のv3 fixtureで確認します。
+
+## Device Preset v3（現行Sequence-capable Export）
+
+`device-presets-v3/`にKey、Encoder Legacy/v2、JoystickのLoop/Ping-Pong、旧mode欠落の互換例、不正値、および送信列を収録します。既存v1/v2 fixtureは旧schema互換の検証用に保持します。
+
+- 仕様: [`../DEVICE_PRESET_FORMAT_V3.md`](../DEVICE_PRESET_FORMAT_V3.md)
+- JSON Schema: [`../schemas/chainosc-device-preset-v3.schema.json`](../schemas/chainosc-device-preset-v3.schema.json)
+- テストデータ: [`device-presets-v3/README.md`](device-presets-v3/README.md)
+- 検証: `node scripts/validate_device_preset_v3_fixtures.mjs`
 
 ## 正常系プリセット
 
@@ -40,7 +49,7 @@ v2 fixtureはEncoder v2 Exporterの回帰基準です。Key Exporterの回帰基
 | `device-presets/valid/tof.json` | ToF最大距離、方向、出力範囲 | SERIES-PRESET-TOF-01 |
 | `device-presets/valid/joystick.json` | Joystick X／Y、反転、クリック | SERIES-PRESET-JOY-01 |
 
-正常系ファイルにはUID、デバイス名、ホットキーを含めていません。各製品へ順番にインポートし、再エクスポートしたファイルを次の製品へ渡してください。
+正常系ファイルにはUID、デバイス名、ホットキーを含めていません。これらはv1旧互換試験の入力例です。現行Exporterからの再エクスポートはDevice Typeによってv3へ変わるため、旧fixtureとのschema番号の一致を要求せず、設定の意味を比較してください。
 
 ## 異常系プリセット
 

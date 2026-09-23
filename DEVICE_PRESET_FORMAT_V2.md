@@ -1,8 +1,7 @@
 # ChainOSC Device Preset JSON Format v2
 
 この文書は、`ChainOSC-device-preset`、`schemaVersion: 2`の正規出力仕様を定義します。
-現段階のv2はEncoderを対象とします。Keyのmaintained canonical formatはDevice Preset v1です。Angle、ToF、Joystickのv2仕様は未確定であり、
-本書およびv2 Schemaへ先行して追加しません。
+v2 contractの対象はEncoderです。本文とJSON例はv2当時のcontractを保持します。現行4製品の新規ExportはKey／Encoder／Joystickがv3、Angle／ToFがv1です。現在の仕様は[`DEVICE_PRESET_FORMAT_V3.md`](DEVICE_PRESET_FORMAT_V3.md)を参照してください。v2 Encoder Presetは対応する現行Importerで引き続き利用できます。
 
 ## 位置づけ
 

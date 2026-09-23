@@ -1,0 +1,15 @@
+{
+  "fixtures": {
+    "key-mode-negative.json": "E_PRESET_DEVICE_SETTING_INVALID",
+    "key-mode-two.json": "E_PRESET_DEVICE_SETTING_INVALID",
+    "key-mode-string.json": "E_PRESET_FIELD_TYPE_INVALID",
+    "key-type-name-mismatch.json": "schema-only: deviceTypeName mismatch",
+    "key-schema-unsupported.json": "E_PRESET_SCHEMA_UNSUPPORTED",
+    "key-sequence-step-zero.json": "E_SEQUENCE_STEP_ZERO",
+    "key-sequence-missing-end.json": "E_SEQUENCE_REQUIRED_FIELD_MISSING",
+    "key-runtime-direction.json": "schema-only: runtime-only field",
+    "encoder-mixed-rotation.json": "E_PRESET_DEVICE_SETTING_INVALID",
+    "encoder-direction-wrong-type.json": "E_PRESET_FIELD_TYPE_INVALID",
+    "joystick-mode-two.json": "E_PRESET_DEVICE_SETTING_INVALID"
+  }
+}

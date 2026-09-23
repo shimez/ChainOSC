@@ -17,8 +17,9 @@
     "ajv-formats": "^3.0.1"
   },
   "scripts": {
-    "test": "npm run test:preset-v2",
-    "test:preset-v2": "node scripts/validate_device_preset_v2_fixtures.mjs"
+    "test": "npm run test:preset-v2 && npm run test:preset-v3",
+    "test:preset-v2": "node scripts/validate_device_preset_v2_fixtures.mjs",
+    "test:preset-v3": "node scripts/validate_device_preset_v3_fixtures.mjs"
   },
   "repository": {
     "type": "git",

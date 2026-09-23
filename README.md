@@ -49,10 +49,9 @@ XIAO ESP32シリーズと12キーのマトリクス、Encoderを組み合わせ�
 - KeyのPress / ReleaseおよびSequenceによるOSC送信
 - OSCのFloat、Int、String値（対応する入力・製品の範囲内）
 - Device Preset JSONによるデバイス単位の設定のエクスポート／インポート
-- Key用のDevice Preset v1を、M5ChainOSC、ChainOSCmini、ChainOSCnano、ChainOSCPad、ChainOSC for Windowsの5製品で共有
-- Encoder用のDevice Preset v2を、M5ChainOSC、ChainOSCmini、ChainOSCnano、ChainOSCPadの4製品で共有
-- Encoder用のDevice Preset v1は、同じ4製品でLegacy互換としてImport可能
-- Angle、ToF、Joystick用のDevice Preset v1を、M5ChainOSC、ChainOSCmini、ChainOSCnanoの3製品で共有
+- 現行4製品はKey／EncoderのDevice Preset v3を共有し、M5ChainOSC、ChainOSCmini、ChainOSCnanoはJoystick v3も共有
+- Key v1は現行4製品とChainOSC for Windowsで共有可能。Encoder v1/v2も現行4製品でImport可能
+- Angle／ToFのDevice Preset v1を、M5ChainOSC、ChainOSCmini、ChainOSCnanoの3製品で共有
 - Angleは8-bit／12-bit入力、Minimum Change（最小変化量）、出力mappingを共通化し、Resolution変更時を含むruntime baseline semanticsを定義
 - JoystickはX／Y、Invert X／Y、Minimum Change（最小変化量）の軸別判定、出力mapping、Press / ReleaseまたはSequenceによるPushを共通化
 - ToFはmm単位の距離、Minimum Change (mm)（最小変化量 (mm)）、Maximum Distance、Output Directionと、baselineがない状態で最初の有効値を送信するruntime semanticsを共通化
@@ -65,17 +64,27 @@ ChainOSCシリーズでは、製品間で設定を共有するためのDevice Pr
 
 ### Device Preset v1
 
-Device Preset v1は、Key、Encoder、Angle、ToF、Joystickのデバイス設定に使用されている形式です。対応するDevice Typeと製品の間で、設定をエクスポート／インポートできます。
+Device Preset v1は、Key、Encoder、Angle、ToF、Joystickの従来形式です。現行firmwareでも対応するDevice TypeへImportできます。
 
-KeyではDevice Preset v1がmaintained canonical formatです。Encoderではv1も使用されていますが、Device Preset v2が定義されており、現在のnormative targetはv2です。
+AngleとToFの現行Exportはv1です。Key、Encoder、Joystickの現行Exportはv3です。v1の既存JSONを機械的にv3へ変換する必要はありません。
 
 詳細は[`DEVICE_PRESET_FORMAT_V1.md`](DEVICE_PRESET_FORMAT_V1.md)を参照してください。
 
 ### Device Preset v2
 
-現在のDevice Preset v2のnormative targetはEncoderです。EncoderのAmount、Direction、Push設定と、v1からの移行方針を[`DEVICE_PRESET_FORMAT_V2.md`](DEVICE_PRESET_FORMAT_V2.md)で定義しています。
+v2 contractを利用した現行Device TypeはEncoderです。EncoderのAmount、Direction、Push設定と、v1からの移行方針を[`DEVICE_PRESET_FORMAT_V2.md`](DEVICE_PRESET_FORMAT_V2.md)で定義しています。v2のEncoder Presetは現行4製品でもImportできます。
 
-schemaVersionはデバイス種類ごとのformat contractを表します。シリーズ全体で同じ世代番号として扱うものではなく、すべてのデバイス種類が同時に同じschemaVersionへ移行する必要はありません。Angle、ToF、Joystickのv2仕様は現時点で未確定です。
+### Device Preset v3（現行Export）
+
+| Device Type | 現行4製品のExport | 対応製品 |
+| --- | --- | --- |
+| Encoder | v3 | M5ChainOSC、ChainOSCmini、ChainOSCnano、ChainOSCPad |
+| Angle | v1 | M5ChainOSC、ChainOSCmini、ChainOSCnano |
+| Key | v3 | M5ChainOSC、ChainOSCmini、ChainOSCnano、ChainOSCPad |
+| Joystick | v3 | M5ChainOSC、ChainOSCmini、ChainOSCnano |
+| ToF | v1 | M5ChainOSC、ChainOSCmini、ChainOSCnano |
+
+`schemaVersion`はDevice Typeの改版回数やfirmware versionではなく、そのPresetが利用するJSON contractの世代です。Key／Joystickはv1→v3、Encoderはv1→v2→v3へ進みました。全Device Typeが各世代を順番に経由するわけではありません。v3はSequenceのLoop／Ping-Pong設定を記録します。詳細は[`DEVICE_PRESET_FORMAT_V3.md`](DEVICE_PRESET_FORMAT_V3.md)を参照してください。
 
 ### Import Error Registry
 

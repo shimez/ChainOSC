@@ -2,11 +2,13 @@
 
 この文書は、`ChainOSC-device-preset`、`schemaVersion: 1`の正規形式を定義します。
 
+> 本文とJSON例はv1 contractの記録です。現行4製品の新規ExportはKey／Encoder／Joystickがv3、Angle／ToFがv1です。現行のSequence仕様は[`DEVICE_PRESET_FORMAT_V3.md`](DEVICE_PRESET_FORMAT_V3.md)を参照してください。v1のPresetは対応する現行Importerで引き続き利用できます。
+
 ## 位置づけ
 
 - Device Preset v1は、Key、Encoder、Angle、ToF、Joystickのデバイス設定で使用されています。
-- Keyのmaintained canonical formatはDevice Preset v1です。Key v1は現行仕様であり、Legacyでもdeprecatedでもありません。Keyの新規正規Exportは`schemaVersion: 1`を使用します。
-- format versionはデバイス種類ごとのcontract evolutionを表します。すべてのデバイス種類が同時に同じ`schemaVersion`へ移行する必要はありません。現在、Device Preset v2の規範対象はEncoderです。
+- Key v1は有効な互換形式です。この文書の正規例はv1時代の出力形状を示します。現行4製品のKey新規Exportは`schemaVersion: 3`です。
+- `schemaVersion`はPresetが使用するJSON contractの世代であり、Device Typeごとの改版回数ではありません。すべての種類が順番に同じ世代を経由する必要はありません。v2 contractの対象はEncoderです。
 - 本仕様は`schemaVersion: 1`として正規に出力されるJSONを定義します。
 - Importerは、公開済みバージョンとの互換性維持のため、本仕様より緩い入力や旧`M5ChainOSC-device-preset`を受け入れる場合があります。
 - Importerが受け入れることは、そのJSONがv1の正規出力であることを意味しません。
